@@ -20,7 +20,7 @@ const columns = 100;
 const rows = 10;
 let dino,block;
 function preload() {
-	sprite = loadImage('assets/Untitled-2.png');
+	sprite = loadImage('assets/player.png');
 	block = loadImage('assets/tileset.png');
 }
 function setup() {
@@ -80,3 +80,4 @@ function Block(x,y) {
 	this.y = y;
 	this.w = tileSize;
 }
+
