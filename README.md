@@ -1,5 +1,9 @@
 # Seif Platformer (Prototype)
 
+## 🌐 Live Demo
+👉 [https://seifpetit.github.io/seif-platformer]
+![Gameplay Demo](./demo.gif)
+
 A small 2D platformer built with **p5.js**, my first prototype exploring player physics, collisions, and level design logic.
 
 🧩 **Current state:** early raw build — single level, working collisions, and basic trap mechanics.  
@@ -38,7 +42,6 @@ A small 2D platformer built with **p5.js**, my first prototype exploring player 
 
 ---
 
-## 🌐 Live Demo
-👉 [https://seifpetit.github.io/seif-platformer](https://seifpetit.github.io/seif-platformer)
 <img width="1845" height="784" alt="Capture" src="https://github.com/user-attachments/assets/dbcddfdf-500c-4d52-8656-9b9ccdfab312" />
+
 
