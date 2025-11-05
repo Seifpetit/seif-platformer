@@ -12,6 +12,10 @@
     <script src="https://unpkg.com/p5@1.9.0/lib/p5.min.js"></script>
 
     <!-- your app entry as an ES module -->
-    <script type="module" src="/src/main.js"></script>
+    <script type="module">
+      const base = window.location.pathname.includes('seif-platformer') ? '/seif-platformer' : '.';
+      import(`${base}/src/main.js`);
+    </script>
+
   </body>
 </html>
