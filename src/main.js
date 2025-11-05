@@ -61,7 +61,7 @@ function draw(p) {
   drawLayer(p, atlas, level.layers.decoration, level.width, level.height, camX, camY);
 
   // --- TEMP: draw a few sample trees on top of the map -----------------
-  if (SHOW_TREE_PREVIEW) treePreview(p);
+  //if (SHOW_TREE_PREVIEW) treePreview(p);
   // ---------------------------------------------------------------------
 
   if (dino) { dino.update(p); dino.draw(p, camX, camY); }

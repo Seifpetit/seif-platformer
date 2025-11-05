@@ -1,29 +1,41 @@
 {
-  "name": "Level 2 — Tree Test",
   "width": 40,
-  "height": 24,
+  "height": 15,
   "tiles": [
+    
+    { "x": 5, "y": 10, "id": 1, "layer": "ground" },
+    { "x": 6, "y": 10, "id": 2, "layer": "ground" },
+    { "x": 7, "y": 10, "id": 3, "layer": "ground" },
+    { "x": 8, "y": 10, "id": 4, "layer": "ground" },
+    { "x": 9, "y": 10, "id": 1, "layer": "ground" },
+    { "x": 10, "y": 10, "id": 2, "layer": "ground" },
+    { "x": 11, "y": 10, "id": 3, "layer": "ground" },
+    { "x": 12, "y": 10, "id": 4, "layer": "ground" },
+    { "x": 13, "y": 10, "id": 1, "layer": "ground" },
+    { "x": 14, "y": 10, "id": 2, "layer": "ground" },
+    { "x": 15, "y": 10, "id": 3, "layer": "ground" },
+    { "x": 16, "y": 10, "id": 4, "layer": "ground" },
 
-    { "x": 4,  "y": 18, "id": 1,  "layer": "ground" },
-    { "x": 5,  "y": 18, "id": 2,  "layer": "ground" },
-    { "x": 6,  "y": 18, "id": 3,  "layer": "ground" },
-    { "x": 7,  "y": 18, "id": 4,  "layer": "ground" },
+    
+    { "x": 6, "y": 7, "id": 273, "layer": "decoration" },
+    { "x": 7, "y": 7, "id": 274, "layer": "decoration" },
+    { "x": 8, "y": 7, "id": 275, "layer": "decoration" },
+    { "x": 6, "y": 8, "id": 238, "layer": "decoration" },
+    { "x": 7, "y": 8, "id": 239, "layer": "decoration" },
+    { "x": 8, "y": 8, "id": 240, "layer": "decoration" },
+    { "x": 6, "y": 9, "id": 28,  "layer": "decoration" },
+    { "x": 7, "y": 9, "id": 35,  "layer": "decoration" },
+    { "x": 8, "y": 9, "id": 29,  "layer": "decoration" },
 
-    { "x": 10, "y": 18, "id": 1,  "layer": "ground" },
-    { "x": 11, "y": 18, "id": 2,  "layer": "ground" },
-    { "x": 12, "y": 18, "id": 3,  "layer": "ground" },
-    { "x": 13, "y": 18, "id": 4,  "layer": "ground" },
-
- 
-    { "x": 9,  "y": 14, "id": 53, "layer": "detail" },
-    { "x": 10, "y": 14, "id": 54, "layer": "detail" },
-
-
-    { "x": 20, "y": 16, "id": 235, "layer": "detail" },
-    { "x": 21, "y": 16, "id": 236, "layer": "detail" },
-    { "x": 22, "y": 16, "id": 237, "layer": "detail" },
-    { "x": 20, "y": 17, "id": 264, "layer": "detail" },
-    { "x": 21, "y": 17, "id": 265, "layer": "detail" },
-    { "x": 22, "y": 17, "id": 266, "layer": "detail" }
+    
+    { "x": 13, "y": 6, "id": 281, "layer": "decoration" },
+    { "x": 14, "y": 6, "id": 282, "layer": "decoration" },
+    { "x": 15, "y": 6, "id": 283, "layer": "decoration" },
+    { "x": 13, "y": 7, "id": 252, "layer": "decoration" },
+    { "x": 14, "y": 7, "id": 253, "layer": "decoration" },
+    { "x": 15, "y": 7, "id": 254, "layer": "decoration" },
+    { "x": 13, "y": 8, "id": 28,  "layer": "decoration" },
+    { "x": 14, "y": 8, "id": 280, "layer": "decoration" },
+    { "x": 15, "y": 8, "id": 29,  "layer": "decoration" }
   ]
 }
