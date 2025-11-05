@@ -6,7 +6,7 @@ import { drawTree } from './tileset.js';
 
 // src/main.js (add near the top after imports)
 function loadLevelByName(name) {
-  loadLevel(`/levels/${name}.json`).then(l => {
+  loadLevel(`./levels/${name}.json`).then(l => {
     level = l;
     dino = new Dino(24, 324);
     // optional: recenter camera
@@ -23,7 +23,7 @@ let camX = 0, camY = 0;
 let SHOW_TREE_PREVIEW = true;
 
 function preload(p) {
-  atlas = p.loadImage('/src/assets/tile_sheet.png');
+  atlas = p.loadImage('./src/assets/tile_sheet.png');
 }
 
 function setup(p) {
