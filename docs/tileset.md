@@ -5,10 +5,6 @@
 > Columns: **33** Rows: **28**  
 > Generated: *(add date)*  
 
----![](../src/assets/slices/tile_001_c0_r0.png)
-[Open image](../src/assets/slices/tile_001_c0_r0.png)
-
-
 
 ## 🧱 Ground Blocks
 
@@ -267,6 +263,7 @@
 - You can use `tileset.js` to programmatically load these IDs.
 
 ---
+
 
 
 
