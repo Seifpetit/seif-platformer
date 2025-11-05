@@ -1,0 +1,41 @@
+{
+  "width": 100,
+  "height": 14,
+  "layers": {
+    "ground": [],
+    "detail": [],
+    "collision": [],
+    "decoration": []
+  },
+  "tiles": [
+    { "layer": "ground", "x": 0,  "y": 13, "id": 1 },
+    { "layer": "ground", "x": 1,  "y": 13, "id": 1 },
+    { "layer": "ground", "x": 2,  "y": 13, "id": 1 },
+    { "layer": "ground", "x": 3,  "y": 13, "id": 1 },
+
+    { "layer": "detail", "x": 10, "y": 11, "id": 24 },
+    { "layer": "detail", "x": 11, "y": 11, "id": 25 },
+
+    { "layer": "ground", "x": 15, "y": 12, "id": 5 },
+    { "layer": "ground", "x": 16, "y": 12, "id": 6 },
+    { "layer": "ground", "x": 17, "y": 12, "id": 7 },
+
+    { "layer": "ground", "x": 22, "y": 11, "id": 2 },
+    { "layer": "ground", "x": 23, "y": 11, "id": 3 },
+    { "layer": "ground", "x": 22, "y": 12, "id": 31 },
+    { "layer": "ground", "x": 23, "y": 12, "id": 32 },
+
+    { "layer": "decoration", "x": 6, "y": 4, "id": 614 },
+
+   
+    { "layer": "ground", "x": 15, "y": 11, "id": 235 },
+    { "layer": "ground", "x": 16, "y": 11, "id": 236 },
+    { "layer": "ground", "x": 17, "y": 11, "id": 237 },
+    { "layer": "ground", "x": 15, "y": 12, "id": 264 },
+    { "layer": "ground", "x": 16, "y": 12, "id": 265 },
+    { "layer": "ground", "x": 17, "y": 12, "id": 266 }
+  ],
+  "entities": [
+    { "type": "cannonV", "variant": "type1", "x": 28, "y": 11 }
+  ]
+}

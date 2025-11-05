@@ -1,20 +1,17 @@
 <!doctype html>
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Seif Platformer</title>
-    <style>html,body{margin:0;padding:0}</style>
-
-    <!-- Load p5.js from CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/addons/p5.dom.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/addons/p5.sound.min.js"></script>
   </head>
   <body>
-    <!-- Your code -->
-    <script src="src/dino.js"></script>
-    <script src="src/main.js"></script>
+    <main id="app"></main>
+
+    <!-- p5 as a global (simplest for Live Server) -->
+    <script src="https://unpkg.com/p5@1.9.0/lib/p5.min.js"></script>
+
+    <!-- your app entry as an ES module -->
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>
-

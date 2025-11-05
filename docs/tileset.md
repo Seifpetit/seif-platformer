@@ -1,10 +1,24 @@
 # 🎨 Tileset Reference
 
 > Tileset: `tile_sheet.png`  
-> Grid size: **16×16 px**  
-> Columns: **33** Rows: **28**  
-> Generated: *(add date)*  
+> Grid size: **20x20 px**  
+> Columns: **29** Rows: **28**  
+ 
 
+---
+### Contents
+- [Ground Blocks](#ground-blocks)
+- [Boxes & Coins](#boxes--coins)
+- [Collectibles](#collectibles)
+- [Pipes 2×2](#pipes-2x2)
+- [Pipes 3×2 (Horizontal)](#pipes-3x2-horizontal)
+- [Platforms 1×3](#platforms-1x3)
+- [Clouds](#clouds)
+- [Water & Bridges](#water--bridges)
+- [Vegetation (Trees & Bushes)](#vegetation-trees--bushes)
+- [Entities (Cannons, etc.)](#entities-cannons-etc)
+
+---
 
 ## 🧱 Ground Blocks
 
@@ -208,7 +222,7 @@
 
 ## 👾 Entities
 
-> Tileset: `tile_sheet.png` • Cell size: **16×16**  
+> Tileset: `tile_sheet.png` • Cell size: **20x20**  
 > Use these for dynamic actors (enemies, NPCs, pickups with behavior, etc.).
 
 | Preview | ID (`id(col,row)`) | Filename |
@@ -235,16 +249,17 @@
 | ![](../src/assets/slices/tile_541_c18_r18.png) | `id(18,18)` → **541** | `tile_541_c18_r18.png` |
 
 ---
+
 ## 🚰 Pipes (Blueprint Layout)
 
-> Tileset: `tile_sheet.png` • Cell: **16×16** • Preview scale: **64px**  
+> Tileset: `tile_sheet.png` • Cell: **20x20** • Preview scale: **64px**  
 > Tip: Middle tiles can repeat to extend length.
 
 ---
 
 ## 🧱 2×2 Pipes (Vertical) — All Colors
 
-> Cell: **16×16** • Preview: **64 px** • Each set of 4 tiles = one color.
+> Cell: **20x20** • Preview: **64 px** • Each set of 4 tiles = one color.
 
 <div style="display:flex; flex-wrap:wrap; gap:16px;">
 
@@ -333,7 +348,7 @@
 
 ## 🚰 3×2 Pipes (Horizontal) — All Colors
 
-> Cell: **16×16** • Preview: **64 px** • Middle tiles repeat for longer pipes.
+> Cell: **20x20** • Preview: **64 px** • Middle tiles repeat for longer pipes.
 
 <div style="display:flex; flex-wrap:wrap; gap:16px;">
 
@@ -434,7 +449,7 @@
 
 ## 🪵 Platforms (1×3) — All Colors
 
-> Cell: **16×16** • Preview: **64 px** • Each row of 3 = one platform color/style.  
+> Cell: **20x20** • Preview: **64 px** • Each row of 3 = one platform color/style.  
 > Middle tile repeats to extend length.
 
 <div style="display:flex; flex-wrap:wrap; gap:16px;">
@@ -706,6 +721,7 @@
 </div>
 
 ---
+
 ## 🌊 Water, Waves & Bridges
 
 > Tileset: `tile_sheet.png` • **Cell: 20 × 20** • Preview: 80 px  
@@ -759,7 +775,8 @@
 </div>
 
 ---
-## 🌳 Trees & Bushes
+
+## 🌳 Small Trees & Bushes
 
 > Tileset: `tile_sheet.png` • **Cell: 20 × 20** • Preview: 80 px  
 > Each pair = **Top + Bottom** (2 × 1 vertical stack).  
@@ -879,7 +896,7 @@
 
 </div>
 ---
-## 🌲 Tall Trees (3×1 Vertical)
+## 🌲 Medium Trees (3×1 Vertical)
 
 > Tileset: `tile_sheet.png` • **Cell: 20 × 20** • Preview: 80 px  
 > Each tree is built with **Top + Middle + Bottom** stacked vertically.
@@ -1215,6 +1232,7 @@
 </div>
 
 ---
+
 ## 🌲 Tree Trunks (3×1 base bands)
 
 > Tileset: `tile_sheet.png` • **Cell: 20×20** • Preview: 80 px  
@@ -1329,6 +1347,7 @@
 </div>
 
 ---
+
 ## 🌳 Example Tree (3×3 layout)
 
 > Cell: **20×20** • Preview: **80 px**  
@@ -1502,6 +1521,7 @@
 </div>
 
 ---
+
 ## 🧨 Vertical Cannons — All 4 Types
 
 > Tileset: `tile_sheet.png` • Cell 20×20 • Preview 80 px  
@@ -1562,61 +1582,12 @@
 
 ---
 
-## 🌵 Spikes / Hazards
 
-| Preview | ID | Description |
-|:--------:|:---|:------------|
-| ![](../src/assets/slices/tile_012_c12_r7.png) | `id(12,7)` | Spike – kill on contact |
-| ![](../src/assets/slices/tile_013_c13_r7.png) | `id(13,7)` | Spike – variant |
-
----
-
-## 🚰 Pipes (3×2 object)
-
-| Top | Mid | Bottom |
-|:----:|:----:|:----:|
-| ![](../src/assets/slices/tile_003_c3_r6.png) ![](../src/assets/slices/tile_004_c4_r6.png) | ![](../src/assets/slices/tile_003_c3_r7.png) ![](../src/assets/slices/tile_004_c4_r7.png) | ![](../src/assets/slices/tile_003_c3_r8.png) ![](../src/assets/slices/tile_004_c4_r8.png) |
-| `id(3,6)`–`id(4,8)` |  | Classic pipe 3×2 |
-
----
-
-## 🌿 Bushes / Hills
-
-| Preview | ID / Group | Description |
-|:--------:|:------------|:-------------|
-| ![](../src/assets/slices/tile_010_c10_r5.png) | `id(10,5)` | Bush top-left |
-| ![](../src/assets/slices/tile_011_c11_r5.png) | `id(11,5)` | Bush top-right |
-| ![](../src/assets/slices/tile_010_c10_r6.png) | `id(10,6)` | Bush bottom-left |
-| ![](../src/assets/slices/tile_011_c11_r6.png) | `id(11,6)` | Bush bottom-right |
-
----
-
-## 🗝️ Keys & Doors
-
-| Preview | ID | Description |
-|:--------:|:---|:------------|
-| ![](../src/assets/slices/tile_025_c25_r10.png) | `id(25,10)` | Key collectible |
-| ![](../src/assets/slices/tile_026_c26_r10.png) | `id(26,10)` | Door top-left |
-| ![](../src/assets/slices/tile_027_c27_r10.png) | `id(27,10)` | Door top-right |
-| ![](../src/assets/slices/tile_026_c26_r11.png) | `id(26,11)` | Door bottom-left |
-| ![](../src/assets/slices/tile_027_c27_r11.png) | `id(27,11)` | Door bottom-right |
-
----
-
-## ☁️ Clouds & Decor
-
-| Preview | ID | Type |
-|:--------:|:---|:-----|
-| ![](../src/assets/slices/tile_001_c1_r23.png) | `id(1,23)` | Small cloud |
-| ![](../src/assets/slices/tile_002_c2_r23.png) | `id(2,23)` | Big cloud left |
-| ![](../src/assets/slices/tile_003_c3_r23.png) | `id(3,23)` | Big cloud right |
-
----
 
 ## 🧾 Notes
 - Each **tile ID** is defined as `id(col, row)` = `row * tilesetCols + col + 1`
 - Sliced images are in: `src/assets/slices/`
-- Displayed at 48×48 px for readability; real size is 16×16
+- Displayed at 48×48 px for readability; real size is 20x20
 - You can use `tileset.js` to programmatically load these IDs.
 
 ---

@@ -1,0 +1,29 @@
+{
+  "name": "Level 2 — Tree Test",
+  "width": 40,
+  "height": 24,
+  "tiles": [
+
+    { "x": 4,  "y": 18, "id": 1,  "layer": "ground" },
+    { "x": 5,  "y": 18, "id": 2,  "layer": "ground" },
+    { "x": 6,  "y": 18, "id": 3,  "layer": "ground" },
+    { "x": 7,  "y": 18, "id": 4,  "layer": "ground" },
+
+    { "x": 10, "y": 18, "id": 1,  "layer": "ground" },
+    { "x": 11, "y": 18, "id": 2,  "layer": "ground" },
+    { "x": 12, "y": 18, "id": 3,  "layer": "ground" },
+    { "x": 13, "y": 18, "id": 4,  "layer": "ground" },
+
+ 
+    { "x": 9,  "y": 14, "id": 53, "layer": "detail" },
+    { "x": 10, "y": 14, "id": 54, "layer": "detail" },
+
+
+    { "x": 20, "y": 16, "id": 235, "layer": "detail" },
+    { "x": 21, "y": 16, "id": 236, "layer": "detail" },
+    { "x": 22, "y": 16, "id": 237, "layer": "detail" },
+    { "x": 20, "y": 17, "id": 264, "layer": "detail" },
+    { "x": 21, "y": 17, "id": 265, "layer": "detail" },
+    { "x": 22, "y": 17, "id": 266, "layer": "detail" }
+  ]
+}
