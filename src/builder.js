@@ -34,9 +34,9 @@ export function drawBuilder(p, { gWorld, gOverlay, gHUD }) {
 
   // 4) HUD (bottom bar)
   const HUD_H = 40;
-  gHUD.noStroke(); gHUD.fill(20); gHUD.rect(0, p.height - HUD_H, p.width, HUD_H);
+  gHUD.noStroke(); gHUD.fill(20); gHUD.rect(0, p.height - HUD_H - R.builder.padX, p.width, HUD_H);
   gHUD.fill(255); gHUD.textSize(14); gHUD.textAlign(gHUD.LEFT, gHUD.CENTER);
-  gHUD.text(`BUILDER  |  Selected: ${R.builder.selectedId || '—'}`, 12, p.height - HUD_H / 2);
+  gHUD.text(`BUILDER  |  Selected: ${R.builder.selectedId || '—'}`, 12, p.height - HUD_H / 2 - R.builder.padX);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -47,7 +47,7 @@ function drawRawPalette(g, atlas, viewW, viewH) {
      if (!atlas?.width) return null;
   const panelW = atlas.width;              // 580
   const panelX = viewW - panelW;           // flush-right
-   const oy     = Math.floor((viewH - atlas.height) * 0.5); // vertical center
+   const oy     = 0; // vertical center
   // backdrop
   g.noStroke();
   g.fill(0, 0, 0, 150);

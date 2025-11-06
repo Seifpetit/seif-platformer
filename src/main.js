@@ -22,7 +22,7 @@ new window.p5(p => {
   };
 
   p.setup = async () => {
-    p.createCanvas(window.innerWidth, window.innerHeight);
+    p.createCanvas(window.innerWidth - R.builder.padX, window.innerHeight - R.builder.padX); // "- R.builder.padX" //TEMP
     p.noSmooth(); p.pixelDensity(1);
 
     // offscreen layers
@@ -34,7 +34,7 @@ new window.p5(p => {
     R.level = await loadLevel('./levels/level2.json');
 
     // Builder: blank map
-    const W = 48, H = 24;
+    const W = 44, H = 24;  //W for nb of grid's columns , H for nb of rows 
     R.builder.level = {
       width: W, height: H,
       layers: {
