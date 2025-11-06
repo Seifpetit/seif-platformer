@@ -5,7 +5,7 @@
 // - drawLayer() renders only visible window using cameraX/Y
 // ─────────────────────────────────────────────────────────────────────────────
 
-  import { fromId, TILE_SIZE, drawTileId } from './tileset.js';
+  import { fromId, TILE_SIZE } from './tileset.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // [LOAD] Convert sparse tiles into dense arrays per layer
