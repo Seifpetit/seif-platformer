@@ -1,44 +1,105 @@
-// src/tileset.js
-// Registry aligned to tileset.md
-// Cell size = 20px, atlas columns = 29 (0-based col/row).
+// ─────────────────────────────────────────────────────────────────────────────
+// [GRID] Coordinate system
+// TILE_SIZE → pixel size per tile
+// TILE_COLS → spritesheet columns (for id ↔ (col,row) conversion)
+// ─────────────────────────────────────────────────────────────────────────────
 
-export const TILE_SIZE = 20;
-export const TILE_COLS = 29;
+  export const TILE_SIZE = 20;
+  export const TILE_COLS = 29;
 
-// id helpers
-export const id = (col, row) => row * TILE_COLS + col + 1;
-export const fromId = (tileId) => {
-  const z = tileId - 1;
-  return { col: z % TILE_COLS, row: Math.floor(z / TILE_COLS) };
-};
-export const srcRect = (tileId) => {
-  const { col, row } = fromId(tileId);
-  return { sx: col * TILE_SIZE, sy: row * TILE_SIZE, sw: TILE_SIZE, sh: TILE_SIZE };
-};
+// ─────────────────────────────────────────────────────────────────────────────
+// [ID↔POS] Helpers
+// id(col,row) → linear id (1-based)
+// fromId(id)  → {col,row} (0-based)
+// srcRect(id) → source rect (sx, sy, sw, sh) in pixels
+// ─────────────────────────────────────────────────────────────────────────────
 
-const blit = (idVal, x, y) => {
-  const { col, row } = fromId(idVal);
-  const dx = Math.floor(px(x));
-  const dy = Math.floor(py(y));
-  p.image(
-    atlas,
-    dx, dy, TILE_SIZE, TILE_SIZE,
-    col * TILE_SIZE, row * TILE_SIZE,
-    TILE_SIZE, TILE_SIZE
-  );
-};
+  export const id = (col, row) => row * TILE_COLS + col + 1;
+  export const fromId = (tileId) => {
+    const z = tileId - 1;
+    return { col: z % TILE_COLS, row: Math.floor(z / TILE_COLS) };
+  };
+  export const srcRect = (tileId) => {
+    const { col, row } = fromId(tileId);
+    return { sx: col * TILE_SIZE, sy: row * TILE_SIZE, sw: TILE_SIZE, sh: TILE_SIZE };
+  };
 
-// draw helper (p5-style image)
+  const blit = (idVal, x, y) => {
+    const { col, row } = fromId(idVal);
+    const dx = Math.floor(px(x));
+    const dy = Math.floor(py(y));
+    p.image(
+      atlas,
+      dx, dy, TILE_SIZE, TILE_SIZE,
+      col * TILE_SIZE, row * TILE_SIZE,
+      TILE_SIZE, TILE_SIZE
+    );
+  };
 
-// draw helper (already good)
-export function drawTileId(p, img, tileId, gx, gy, destSize = TILE_SIZE) {
-  const { sx, sy, sw, sh } = srcRect(tileId);
-  const dx = Math.floor(gx * destSize);
-  const dy = Math.floor(gy * destSize);
-  p.image(img, dx, dy, destSize, destSize, sx, sy, sw, sh);
-}
+    // Optional aliases if your MD headings used British spelling or a different name:
+  export const DOORS_ALIASES = {
+    grey: 'gray',
+    brown: 'green', // if your "Brown" section actually referenced the green hue IDs
+  };
 
-// ── convenience renderers ──────────────────────────────────────────────
+  // Resolve a color name through aliases
+  function resolveDoorColor(color) {
+    if (DOORS[color]) return color;
+    const alias = DOORS_ALIASES[color];
+    return DOORS[alias] ? alias : null;
+  }
+
+  // Get a door tile id by semantic keys
+  export function getDoorId(color = 'green', tone = 'shiny', type = 'full') {
+    const c = resolveDoorColor(color);
+    if (!c) return null;
+    const toneBucket = DOORS[c]?.[tone];
+    return toneBucket ? toneBucket[type] ?? null : null;
+  }
+
+  
+
+// ─────────────────────────────────────────────────────────────────────────────
+// [PRIMITIVE] drawTileId(p, img, tileId, gx, gy)
+// Draw one tile at grid (gx,gy) using p5 image()
+// gx,gy are tile units; function multiplies by TILE_SIZE internally
+// ─────────────────────────────────────────────────────────────────────────────
+
+  export function drawTileId(p, img, tileId, gx, gy, destSize = TILE_SIZE) {
+    const { sx, sy, sw, sh } = srcRect(tileId);
+    const dx = Math.floor(gx * destSize);
+    const dy = Math.floor(gy * destSize);
+    p.image(img, dx, dy, destSize, destSize, sx, sy, sw, sh);
+  }
+
+/**
+   * drawDoor(...)
+   * p: p5 instance
+   * img: atlas image
+   * gx, gy: grid coords (tiles)
+   * color: 'green' | 'blue' | 'red' | 'gray' (or 'grey'/'brown' via alias)
+   * tone: 'shiny' | 'dark'
+   * type: 'left' | 'right' | 'full' | 'mouse'
+   */
+  export function drawDoor(p, img, gx, gy, { color = 'green', tone = 'shiny', type = 'full' } = {}) {
+    const id = getDoorId(color, tone, type);
+    if (!id) return;
+    // You already have drawTileId(p, img, id, gx, gy)
+    drawTileId(p, img, id, gx, gy);
+  }
+
+  // Level array placement helper (if you want to stamp into a layer array)
+  export function placeDoor(arr, width, gx, gy, opts) {
+    const id = getDoorId(opts?.color ?? 'green', opts?.tone ?? 'shiny', opts?.type ?? 'full');
+    if (!id) return;
+    arr[gy * width + gx] = id;
+  }
+  
+// ─────────────────────────────────────────────────────────────────────────────
+// [COMPOSITE RENDERERS] Quick painters for common shapes (2×2, 3×2, 1×3)
+// Stateless convenience to draw on top of level for previews/effects
+// ─────────────────────────────────────────────────────────────────────────────
+
 export function drawPipe2x2(p, img, gx, gy, color = 'green', destSize = TILE_SIZE) {
   const ids = PIPE_2x2[color];
   drawTileId(p, img, ids[0], gx + 0, gy + 0, destSize);
@@ -88,7 +149,10 @@ export function drawWaterStrip(p, img, gx, gy, variant = 'A', width = 3, destSiz
   drawTileId(p, img, R, gx + Math.max(2, width - 1), gy, destSize);
 }
 
-// stacks / trunks
+// ─────────────────────────────────────────────────────────────────────────────
+// [STACK] Vertical stacks (2-high, 3-high) by registry triplets
+// ─────────────────────────────────────────────────────────────────────────────
+
 export function drawStack2(p, img, gx, gy, ids, destSize = TILE_SIZE) {
   const [TOP, BOTTOM] = ids;
   drawTileId(p, img, TOP, gx, gy, destSize);
@@ -102,67 +166,134 @@ export function drawStack3(p, img, gx, gy, ids, destSize = TILE_SIZE) {
   drawTileId(p, img, BOT, gx, gy + 2, destSize);
 }
 
-export function drawTrunkBand(p, img, gx, gy, variant = 'R1', width = 3, destSize = TILE_SIZE) {
-  const [L, M, R] = TRUNK_3x1[variant] || TRUNK_3x1.R1;
-  drawTileId(p, img, L, gx + 0, gy, destSize);
-  for (let i = 1; i < Math.max(1, width - 2); i++) drawTileId(p, img, M, gx + i, gy, destSize);
-  drawTileId(p, img, R, gx + Math.max(2, width - 1), gy, destSize);
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// [TRUNK] Band & column painters for tree trunks (L/M/R repeating)
+// drawTrunkBand → single row, repeat middle for width
+// drawTrunkColumn → stack height rows with same band
+// ─────────────────────────────────────────────────────────────────────────────
 
-export function drawTrunkColumn(p, img, gx, gy, variant = 'R1', height = 3, destSize = TILE_SIZE) {
-  const [L, M, R] = TRUNK_3x1[variant] || TRUNK_3x1.R1;
-  for (let row = 0; row < height; row++) {
-    drawTileId(p, img, L, gx + 0, gy + row, destSize);
-    drawTileId(p, img, M, gx + 1, gy + row, destSize);
-    drawTileId(p, img, R, gx + 2, gy + row, destSize);
-  }
-}
-
-// --- TREE COMPOSER (guaranteed export) --------------------------------
-export function drawTree(p, atlas, gx, gy, spec, { camX = 0, camY = 0 } = {}) {
-  const { top, mid, trunk, width = 3, midRows = 1, trunkRows = 3 } = spec;
-
-  // registries defined above
-  const topIds   = (typeof top   === 'string') ? BUSH_TOP_1x3[top]   : top;
-  const midIds   = (typeof mid   === 'string') ? CANOPY_MID_3x1[mid] : mid;
-  const trunkIds = (typeof trunk === 'string') ? TRUNK_3x1[trunk]    : trunk;
-
-  if (!topIds || !midIds || !trunkIds) {
-    console.warn('drawTree: bad keys', { top, mid, trunk, topIds, midIds, trunkIds });
-    return;
+  export function drawTrunkBand(p, img, gx, gy, variant = 'R1', width = 3, destSize = TILE_SIZE) {
+    const [L, M, R] = TRUNK_3x1[variant] || TRUNK_3x1.R1;
+    drawTileId(p, img, L, gx + 0, gy, destSize);
+    for (let i = 1; i < Math.max(1, width - 2); i++) drawTileId(p, img, M, gx + i, gy, destSize);
+    drawTileId(p, img, R, gx + Math.max(2, width - 1), gy, destSize);
   }
 
-  const px = (gx) => gx * TILE_SIZE - camX;
-  const py = (gy) => gy * TILE_SIZE - camY;
+  export function drawTrunkColumn(p, img, gx, gy, variant = 'R1', height = 3, destSize = TILE_SIZE) {
+    const [L, M, R] = TRUNK_3x1[variant] || TRUNK_3x1.R1;
+    for (let row = 0; row < height; row++) {
+      drawTileId(p, img, L, gx + 0, gy + row, destSize);
+      drawTileId(p, img, M, gx + 1, gy + row, destSize);
+      drawTileId(p, img, R, gx + 2, gy + row, destSize);
+    }
+  }
 
-  const blit = (idVal, x, y) => {
-    const { col, row } = fromId(idVal);
-    p.image(
-      atlas,
-      px(x), py(y), TILE_SIZE, TILE_SIZE,
-      col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE
-    );
-  };
+// ─────────────────────────────────────────────────────────────────────────────
+// [COMPOSER] drawTree(p, atlas, gx, gy, spec, {camX,camY})
+// spec = { top: 'A#', mid: 'A#/B#', trunk: 'R#', width, midRows, trunkRows }
+// Renders top canopy row → N mid rows → trunk rows, all as (L•M•R) bands
+// Uses registries: BUSH_TOP_1x3, CANOPY_MID_3x1, TRUNK_3x1
+// ─────────────────────────────────────────────────────────────────────────────
 
-  const drawTripleRow = (ids, x, y, w) => {
-    blit(ids[0], x, y);                         // left
-    for (let i = 0; i < Math.max(0, w - 2); i++) blit(ids[1], x + 1 + i, y); // middle repeat
-    blit(ids[2], x + Math.max(1, w - 1), y);    // right
-  };
+  export function drawTree(p, atlas, gx, gy, spec, { camX = 0, camY = 0 } = {}) {
+    const { top, mid, trunk, width = 3, midRows = 1, trunkRows = 3 } = spec;
 
-  let y = gy;
-  drawTripleRow(topIds,   gx, y++, width);      // top band
-  for (let r = 0; r < midRows;   r++) drawTripleRow(midIds,   gx, y++, width); // middle canopies
-  for (let r = 0; r < trunkRows; r++) drawTripleRow(trunkIds, gx, y++, width); // trunk bands
-}
+    // registries defined above
+    const topIds   = (typeof top   === 'string') ? BUSH_TOP_1x3[top]   : top;
+    const midIds   = (typeof mid   === 'string') ? CANOPY_MID_3x1[mid] : mid;
+    const trunkIds = (typeof trunk === 'string') ? TRUNK_3x1[trunk]    : trunk;
 
-// keep this named export to make tree import unambiguous
-export { drawTree as __ensureDrawTreeExport__ };
+    if (!topIds || !midIds || !trunkIds) {
+      console.warn('drawTree: bad keys', { top, mid, trunk, topIds, midIds, trunkIds });
+      return;
+    }
 
+    const px = (gx) => gx * TILE_SIZE - camX;
+    const py = (gy) => gy * TILE_SIZE - camY;
+
+    const blit = (idVal, x, y) => {
+      const { col, row } = fromId(idVal);
+      p.image(
+        atlas,
+        px(x), py(y), TILE_SIZE, TILE_SIZE,
+        col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE
+      );
+    };
+
+    const drawTripleRow = (ids, x, y, w) => {
+      blit(ids[0], x, y);                         // left
+      for (let i = 0; i < Math.max(0, w - 2); i++) blit(ids[1], x + 1 + i, y); // middle repeat
+      blit(ids[2], x + Math.max(1, w - 1), y);    // right
+    };
+
+    let y = gy;
+    drawTripleRow(topIds,   gx, y++, width);      // top band
+    for (let r = 0; r < midRows;   r++) drawTripleRow(midIds,   gx, y++, width); // middle canopies
+    for (let r = 0; r < trunkRows; r++) drawTripleRow(trunkIds, gx, y++, width); // trunk bands
+  }
+
+  // keep this named export to make tree import unambiguous
+  export { drawTree as __ensureDrawTreeExport__ };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _____________________Everything below is pure data___________________________
+// ─────────────────────────────────────────────────────────────────────────────
+// [REGISTRY] Atomic & composite ID maps
+// coins, boxes, platforms, clouds, water,
+// tree/bush/trunk bands, pipes, doors (if added), BG solids (if added).
+// ─────────────────────────────────────────────────────────────────────────────
 
 /* -----------------------------
    ATOMIC (single-cell) tiles
 ------------------------------*/
+
+/* -----------------------------
+   🟨 SOLID COLORS (Backgrounds)
+   Simple colored tiles for sky, ground backdrops, or minimalist UI panels.
+------------------------------*/
+
+export const SOLID_COLORS = {
+  lightGreen: id(9, 9),   // 271
+  darkGreen:  id(9, 11),  // 329
+  red:        id(9, 13),  // 387
+  darkGrey:   id(9, 15),  // 445
+  grey:       id(9, 17),  // 503
+  blue:       id(9, 19),  // 561
+};
+
+/* -----------------------------
+   🚪 DOORS (1×1)
+   Colors: green, blue, red, gray
+   Tone: shiny (lighter), dark (darker)
+   Types: left, right, full, mouse
+------------------------------*/
+
+export const DOORS = {
+  // 🟫 Brown
+  green: {
+    shiny: { left: 23, right: 21, full: 51,  mouse: 50 }, // ids: (22,0) (20,0) (21,1) (20,1)
+    dark:  { left: 15, right: 13, full: 43,  mouse: 42 }, // ids: (14,0) (12,0) (13,1) (12,1)
+  },
+
+  // 🟦 BLUE
+  blue: {
+    shiny: { left: 81, right: 79, full: 109, mouse: 108 }, // (22,2) (20,2) (21,3) (20,3)
+    dark:  { left: 73, right: 71, full: 101, mouse: 100 }, // (14,2) (12,2) (13,3) (12,3)
+  },
+
+  // ⬜ Grey
+  red: {
+    shiny: { left: 139, right: 137, full: 167, mouse: 166 }, // (22,4) (20,4) (21,5) (20,5)
+    dark:  { left: 131, right: 129, full: 159, mouse: 158 }, // (14,4) (12,4) (13,5) (12,5)
+  },
+
+  // 🟩 Green
+  gray: {
+    shiny: { left: 197, right: 195, full: 225, mouse: 224 }, // (22,6) (20,6) (21,7) (20,7)
+    dark:  { left: 189, right: 187, full: 217, mouse: 216 }, // (14,6) (12,6) (13,7) (12,7)
+  },
+};
+
 
 /* -----------------------------
    💰 COINS & ❓QUESTION BOXES
@@ -533,6 +664,6 @@ export const CANNON_VERTICAL = {
   type4: [ 184, 213, 212 ],
 };
 
-
+// ─────────────────────────────────────────────────────────────────────────────
 
 

@@ -4,9 +4,10 @@
 > Grid size: **20x20 px**  
 > Columns: **29** Rows: **28**  
  
-
 ---
+
 ### Contents
+
 - [Ground Blocks](#ground-blocks)
 - [Boxes & Coins](#boxes--coins)
 - [Collectibles](#collectibles)
@@ -17,6 +18,22 @@
 - [Water & Bridges](#water--bridges)
 - [Vegetation (Trees & Bushes)](#vegetation-trees--bushes)
 - [Entities (Cannons, etc.)](#entities-cannons-etc)
+
+---
+
+## 🟨 Solid Colors
+
+> Tileset: `tile_sheet.png` • Cell size: **20×20**  
+> Below are all solid color tiles with previews and IDs.
+
+| Preview | ID (`id(col,row)`) | Color |
+|:--:|:--|:--|
+| ![](../src/assets/slices/tile_271_c9_r9.png)   | `id(9,9)` → **271**   | Light Green |
+| ![](../src/assets/slices/tile_329_c9_r11.png)  | `id(9,11)` → **329**  | Dark Green |
+| ![](../src/assets/slices/tile_387_c9_r13.png)  | `id(9,13)` → **387**  | Red |
+| ![](../src/assets/slices/tile_445_c9_r15.png)  | `id(9,15)` → **445**  | Dark Grey |
+| ![](../src/assets/slices/tile_503_c9_r17.png)  | `id(9,17)` → **503**  | Grey |
+| ![](../src/assets/slices/tile_561_c9_r19.png)  | `id(9,19)` → **561**  | Blue |
 
 ---
 
@@ -99,6 +116,74 @@
 | ![](../src/assets/slices/tile_080_c21_r2.png) | `id(21,2)` → **80** | `tile_080_c21_r2.png` |
 | ![](../src/assets/slices/tile_138_c21_r4.png) | `id(21,4)` → **138** | `tile_138_c21_r4.png` |
 | ![](../src/assets/slices/tile_196_c21_r6.png) | `id(21,6)` → **196** | `tile_196_c21_r6.png` |
+
+---
+
+## 🚪 Doors
+
+> Tileset: `tile_sheet.png` • Cell size: **20×20**  
+> Each color family has **Shiny** (lighter) and **Dark** (darker) tones.  
+> Types: Entrance Left, Entrance Right, Full Entrance, Mouse Entrance.
+
+---
+
+### 🟫 Brown
+
+| Tone | Type | Preview | ID (`id(col,row)`) | Tile |
+|:--|:--|:--:|:--|:--|
+| Shiny | Entrance Left  | ![](../src/assets/slices/tile_023_c22_r0.png) | `id(22,0)` → **23** | Green Shiny L |
+| Shiny | Entrance Right | ![](../src/assets/slices/tile_021_c20_r0.png) | `id(20,0)` → **21** | Green Shiny R |
+| Shiny | Full Entrance  | ![](../src/assets/slices/tile_051_c21_r1.png) | `id(21,1)` → **51** | Green Shiny Full |
+| Shiny | Mouse Entrance | ![](../src/assets/slices/tile_050_c20_r1.png) | `id(20,1)` → **50** | Green Shiny Mouse |
+| Dark  | Entrance Left  | ![](../src/assets/slices/tile_015_c14_r0.png) | `id(14,0)` → **15** | Green Dark L |
+| Dark  | Entrance Right | ![](../src/assets/slices/tile_013_c12_r0.png) | `id(12,0)` → **13** | Green Dark R |
+| Dark  | Full Entrance  | ![](../src/assets/slices/tile_043_c13_r1.png) | `id(13,1)` → **43** | Green Dark Full |
+| Dark  | Mouse Entrance | ![](../src/assets/slices/tile_042_c12_r1.png) | `id(12,1)` → **42** | Green Dark Mouse |
+
+---
+
+### 🟦 Blue
+
+| Tone | Type | Preview | ID (`id(col,row)`) | Tile |
+|:--|:--|:--:|:--|:--|
+| Shiny | Entrance Left  | ![](../src/assets/slices/tile_081_c22_r2.png) | `id(22,2)` → **81** | Blue Shiny L |
+| Shiny | Entrance Right | ![](../src/assets/slices/tile_079_c20_r2.png) | `id(20,2)` → **79** | Blue Shiny R |
+| Shiny | Full Entrance  | ![](../src/assets/slices/tile_109_c21_r3.png) | `id(21,3)` → **109** | Blue Shiny Full |
+| Shiny | Mouse Entrance | ![](../src/assets/slices/tile_108_c20_r3.png) | `id(20,3)` → **108** | Blue Shiny Mouse |
+| Dark  | Entrance Left  | ![](../src/assets/slices/tile_073_c14_r2.png) | `id(14,2)` → **73** | Blue Dark L |
+| Dark  | Entrance Right | ![](../src/assets/slices/tile_071_c12_r2.png) | `id(12,2)` → **71** | Blue Dark R |
+| Dark  | Full Entrance  | ![](../src/assets/slices/tile_101_c13_r3.png) | `id(13,3)` → **101** | Blue Dark Full |
+| Dark  | Mouse Entrance | ![](../src/assets/slices/tile_100_c12_r3.png) | `id(12,3)` → **100** | Blue Dark Mouse |
+
+---
+
+### ⬜ Grey
+
+| Tone | Type | Preview | ID (`id(col,row)`) | Tile |
+|:--|:--|:--:|:--|:--|
+| Shiny | Entrance Left  | ![](../src/assets/slices/tile_139_c22_r4.png) | `id(22,4)` → **139** | Red Shiny L |
+| Shiny | Entrance Right | ![](../src/assets/slices/tile_137_c20_r4.png) | `id(20,4)` → **137** | Red Shiny R |
+| Shiny | Full Entrance  | ![](../src/assets/slices/tile_167_c21_r5.png) | `id(21,5)` → **167** | Red Shiny Full |
+| Shiny | Mouse Entrance | ![](../src/assets/slices/tile_166_c20_r5.png) | `id(20,5)` → **166** | Red Shiny Mouse |
+| Dark  | Entrance Left  | ![](../src/assets/slices/tile_131_c14_r4.png) | `id(14,4)` → **131** | Red Dark L |
+| Dark  | Entrance Right | ![](../src/assets/slices/tile_129_c12_r4.png) | `id(12,4)` → **129** | Red Dark R |
+| Dark  | Full Entrance  | ![](../src/assets/slices/tile_159_c13_r5.png) | `id(13,5)` → **159** | Red Dark Full |
+| Dark  | Mouse Entrance | ![](../src/assets/slices/tile_158_c12_r5.png) | `id(12,5)` → **158** | Red Dark Mouse |
+
+---
+
+### 🟩 Green
+
+| Tone | Type | Preview | ID (`id(col,row)`) | Tile |
+|:--|:--|:--:|:--|:--|
+| Shiny | Entrance Left  | ![](../src/assets/slices/tile_197_c22_r6.png) | `id(22,6)` → **197** | Grey Shiny L |
+| Shiny | Entrance Right | ![](../src/assets/slices/tile_195_c20_r6.png) | `id(20,6)` → **195** | Grey Shiny R |
+| Shiny | Full Entrance  | ![](../src/assets/slices/tile_225_c21_r7.png) | `id(21,7)` → **225** | Grey Shiny Full |
+| Shiny | Mouse Entrance | ![](../src/assets/slices/tile_224_c20_r7.png) | `id(20,7)` → **224** | Grey Shiny Mouse |
+| Dark  | Entrance Left  | ![](../src/assets/slices/tile_189_c14_r6.png) | `id(14,6)` → **189** | Grey Dark L |
+| Dark  | Entrance Right | ![](../src/assets/slices/tile_187_c12_r6.png) | `id(12,6)` → **187** | Grey Dark R |
+| Dark  | Full Entrance  | ![](../src/assets/slices/tile_217_c13_r7.png) | `id(13,7)` → **217** | Grey Dark Full |
+| Dark  | Mouse Entrance | ![](../src/assets/slices/tile_216_c12_r7.png) | `id(12,7)` → **216** | Grey Dark Mouse |
 
 ---
 
