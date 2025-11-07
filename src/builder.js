@@ -5,6 +5,8 @@ import { R } from './runtime.js';
 import { TILE_SIZE, TILE_COLS, id, srcRect } from './tileset.js';
 import { drawLayer } from './levelLoader.js';
 
+// --- HUD layout constants (local to builder) ---
+
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -33,10 +35,27 @@ export function drawBuilder(p, { gWorld, gOverlay, gHUD }) {
   R.builder._paletteGeom = drawRawPalette(gHUD, atlas, p.width, p.height);
 
   // 4) HUD (bottom bar)
-  const HUD_H = 40;
-  gHUD.noStroke(); gHUD.fill(20); gHUD.rect(0, p.height - HUD_H - R.builder.padX, p.width, HUD_H);
+  gHUD.noStroke(); gHUD.fill(20); gHUD.rect(0, p.height - R.hud.dim.h - R.builder.padX, p.width, R.hud.dim.h); //rectangle
   gHUD.fill(255); gHUD.textSize(14); gHUD.textAlign(gHUD.LEFT, gHUD.CENTER);
-  gHUD.text(`BUILDER  |  Selected: ${R.builder.selectedId || '—'}`, 12, p.height - HUD_H / 2 - R.builder.padX);
+  gHUD.text(`BUILDER  |  Selected: ${R.builder.selectedId || '—'}`, 12, p.height - R.hud.dim.h / 2 - R.builder.padX);//builder text
+    // GitHub link (cr
+    // eate once, then position each frame)
+  if (!R.hud.ghlink) {
+    R.hud.ghlink = p.createA("https://github.com/Seifpetit/seif-platformer", "View Source: GitHub ↗", "_blank");
+    R.hud.ghlink.style("font-size", "14px");
+    R.hud.ghlink.style("font-family", "monospace");
+    R.hud.ghlink.style("color", "#00baff");
+    R.hud.ghlink.style("text-decoration", "none");
+    R.hud.ghlink.style("background", "rgba(0,0,0,0.35)");
+    R.hud.ghlink.style("R.builder.padXding", "4px 8px");
+    R.hud.ghlink.style("border-radius", "6px");
+  }
+  R.hud.ghlink.show(); // ensure visible in Builder
+  const w = R.hud.ghlink.elt.offsetWidth || 0;
+  const x = p.width - w - R.builder.padX;
+  const y = p.height - R.hud.dim.h - R.builder.padX + (R.hud.dim.h - 18) / 2; // vertical center in bar
+  R.hud.ghlink.position(x, y);
+
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -108,5 +127,10 @@ export function builderWheel(p, e) {
 // simple keys to leave builder etc.
 export function builderKey(p) {
   const k = p.key.toLowerCase();
-  if (k === 'g') { R.mode = 'game'; R.RESET_FRAMES = 2; }
+    if (k === 'g') { 
+        R.mode = 'game'; 
+        R.RESET_FRAMES = 2; 
+        R.hud.ghlink?.hide();            // hide DOM link when switching to Game
+    }
+
 }
