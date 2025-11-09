@@ -3,7 +3,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import { R } from './runtime.js';
 import { TILE_SIZE, TILE_COLS, id, srcRect } from './tileset.js';
-import { drawLayer } from './levelLoader.js';
+import { drawLayer , loadLevel } from './levelLoader.js';
 
 // --- HUD layout constants (local to builder) ---
 
@@ -29,32 +29,67 @@ export function drawBuilder(p, { gWorld, gOverlay, gHUD }) {
   for (let y = 0; y <= lvl.height; y++) {
     gOverlay.line(0, y * TILE_SIZE, lvl.width * TILE_SIZE, y * TILE_SIZE);
   }
-
+    gOverlay.noStroke();
   // 3) raw palette — draw on the MAIN canvas LAST so it sits on top visually
   //    (we return its geometry so clicks can be mapped 1:1)
   R.builder._paletteGeom = drawRawPalette(gHUD, atlas, p.width, p.height);
 
-  // 4) HUD (bottom bar)
-  gHUD.noStroke(); gHUD.fill(20); gHUD.rect(0, p.height - R.hud.dim.h - R.builder.padX, p.width, R.hud.dim.h); //rectangle
-  gHUD.fill(255); gHUD.textSize(14); gHUD.textAlign(gHUD.LEFT, gHUD.CENTER);
+  // ─────────────────────────────────────────────
+    // [HELP OVERLAY] hotkey & control guide
+    // ─────────────────────────────────────────────
+    if (R.builder.showHelp) {
+
+        const lines = [
+            '[Click] Paint    [Right Click] Erase',
+            '[E] Export    [I] Import    [G] Playtest',
+            '[V] Toggle Grid    [H] Hide Help'
+        ];
+ 
+        const x_helpOverlay = 0;
+        const y_helpoverlay = lvl.height * TILE_SIZE;
+        const h_helpOverlay = p.height - R.hud.dim.h - y_helpoverlay;
+        const w_helpOverlay = lvl.width*TILE_SIZE;
+
+        const textsize = 24;
+
+        gHUD.noStroke();
+        gHUD.fill(0, 0, 0, 150);
+        gHUD.rect(x_helpOverlay, y_helpoverlay, w_helpOverlay, h_helpOverlay);
+        gHUD.textAlign(gHUD.LEFT, gHUD.TOP);
+        gHUD.textSize(textsize);
+        gHUD.fill(200, 220);
+
+        let startY = y_helpoverlay + R.builder.padX;
+        for (let line of lines) {
+            gHUD.text(line, x_helpOverlay + R.builder.padX, startY);
+            startY += textsize;
+        }
+
+
+    }
+
+  // 5) HUD (bottom bar)
+  gHUD.stroke("orange");gHUD.strokeWeight(2); gHUD.fill(20); gHUD.rect(0, p.height - R.hud.dim.h - R.builder.padX, p.width, R.hud.dim.h); //rectangle
+  gHUD.noStroke();gHUD.fill(255); gHUD.textSize(14); gHUD.textAlign(gHUD.LEFT, gHUD.CENTER);
   gHUD.text(`BUILDER  |  Selected: ${R.builder.selectedId || '—'}`, 12, p.height - R.hud.dim.h / 2 - R.builder.padX);//builder text
     // GitHub link (cr
     // eate once, then position each frame)
-  if (!R.hud.ghlink) {
-    R.hud.ghlink = p.createA("https://github.com/Seifpetit/seif-platformer", "View Source: GitHub ↗", "_blank");
-    R.hud.ghlink.style("font-size", "14px");
-    R.hud.ghlink.style("font-family", "monospace");
-    R.hud.ghlink.style("color", "#00baff");
-    R.hud.ghlink.style("text-decoration", "none");
-    R.hud.ghlink.style("background", "rgba(0,0,0,0.35)");
-    R.hud.ghlink.style("R.builder.padXding", "4px 8px");
-    R.hud.ghlink.style("border-radius", "6px");
-  }
-  R.hud.ghlink.show(); // ensure visible in Builder
-  const w = R.hud.ghlink.elt.offsetWidth || 0;
-  const x = p.width - w - R.builder.padX;
-  const y = p.height - R.hud.dim.h - R.builder.padX + (R.hud.dim.h - 18) / 2; // vertical center in bar
-  R.hud.ghlink.position(x, y);
+    if (!R.hud.ghlink) {
+        R.hud.ghlink = p.createA("https://github.com/Seifpetit/seif-platformer", "View Source: GitHub ↗", "_blank");
+        R.hud.ghlink.style("font-size", "14px");
+        R.hud.ghlink.style("font-family", "monospace");
+        R.hud.ghlink.style("color", "#00baff");
+        R.hud.ghlink.style("text-decoration", "none");
+        R.hud.ghlink.style("background", "rgba(0,0,0,0.35)");
+        R.hud.ghlink.style("R.builder.padXding", "4px 8px");
+        R.hud.ghlink.style("border-radius", "6px");
+    }
+    R.hud.ghlink.show(); // ensure visible in Builder
+    const w = R.hud.ghlink.elt.offsetWidth || 0;
+    const x = p.width - w - R.builder.padX;
+    const y = p.height - R.hud.dim.h - R.builder.padX + (R.hud.dim.h - 18) / 2; // vertical center in bar
+    R.hud.ghlink.position(x, y);
+
 
 }
 
@@ -70,7 +105,7 @@ function drawRawPalette(g, atlas, viewW, viewH) {
   // backdrop
   g.noStroke();
   g.fill(0, 0, 0, 150);
-  g.rect(panelX, 0, panelW, viewH);
+  g.rect(panelX, 0, panelW, viewH - R.hud.dim.h);
   // IMPORTANT: make sure no old tint makes the image transparent
   g.noTint?.();        // p5.Graphics supports tint; guard with ?.
   // draw raw sheet 1:1
@@ -132,5 +167,72 @@ export function builderKey(p) {
         R.RESET_FRAMES = 2; 
         R.hud.ghlink?.hide();            // hide DOM link when switching to Game
     }
+    if (k === 'e') exportLevel();
+    if (k === 'i') importLevel();
+    if (k === 'h') {
+    R.builder.showHelp = !R.builder.showHelp;
+        console.log(`Help overlay: ${R.builder.showHelp ? 'ON' : 'OFF'}`);
+    }
 
+
+}
+
+export function exportLevel() {
+  const data = JSON.stringify(R.builder.level, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'level1.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  console.log('Level exported:', R.builder.level);
+}
+
+export function importLevel() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = e => handleFileInput(e.target.files[0]);
+  input.click();
+}
+
+export function handleFileInput(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);  // raw JSON
+      // optional: validate structure (width, height, layers)
+      if (data.width && data.height && data.layers) {
+        R.builder.level = data;   // <- this line makes the grid redraw
+        console.log('Level imported successfully:', data.name || '(unnamed)');
+      } else {
+        console.warn('Invalid level format');
+      }
+    } catch (err) {
+      console.error('Import failed:', err);
+    }
+  };
+  reader.readAsText(file);
+}
+
+export function builderMouseHeld(p) {
+  const lvl = R.builder.level;
+  if (!lvl) return;
+
+  // find grid coords
+  const gx = Math.floor(p.mouseX / TILE_SIZE);
+  const gy = Math.floor(p.mouseY / TILE_SIZE);
+  if (gx < 0 || gy < 0 || gx >= lvl.width || gy >= lvl.height) return;
+
+  const index = gy * lvl.width + gx;
+
+  // left click = paint
+  if (p.mouseIsPressed && p.mouseButton === p.LEFT) {
+    lvl.layers.ground[index] = R.builder.selectedId || 0;
+  }
+
+  // right click = erase
+  if (p.mouseIsPressed && p.mouseButton === p.RIGHT) {
+    lvl.layers.ground[index] = 0;
+  }
 }

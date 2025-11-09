@@ -6,7 +6,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import { R } from './runtime.js';
 import { loadLevel } from './levelLoader.js';
-import { drawBuilder, builderKey, builderMouse } from './builder.js';
+import { drawBuilder, builderKey, builderMouse, builderWheel, builderMouseHeld } from './builder.js';
 import { drawGame, gameKey, gameMouse, gameWheel } from './game.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -59,6 +59,11 @@ new window.p5(p => {
 
     if (R.mode === 'builder') drawBuilder(p, { gWorld, gOverlay, gHUD });
     else                      drawGame(p,    { gWorld, gOverlay, gHUD });
+
+    if (R.mode === 'builder' && p.mouseIsPressed) {
+      builderMouseHeld(p);
+    }
+
 
     p.clear();
     p.image(gWorld,   0, 0);

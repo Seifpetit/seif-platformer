@@ -15,6 +15,8 @@ export const R = {
   builder: {
     padX: 12,     // optional HUD/canvas padding if you need it later
     level: null,  // builder’s working level gets assigned in main.js setup()
+    showHelp: true,
+
   },
 
   RESET_FRAMES: 0,
