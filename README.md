@@ -1,5 +1,7 @@
 # Seif Platformer (Prototype)
 
+A modular 2D engine built in JavaScript (p5.js) with a full in-engine level editor, runtime, and export system.
+
 ## 🧱 Currently Working On
 Runtime-integrated **level builder** — a visual editor to create, export, and import `.json` maps directly inside the engine.  
 The builder supports multi-layer editing (ground, detail, decoration), scrolling tile palette, and instant game-mode switching (`B` ↔ `G`).
@@ -38,24 +40,110 @@ A modular 2D platformer built with **p5.js**, featuring player physics, level re
 
 ---
 
-## 🧩 File Structure
-| File | Purpose |
-|------|----------|
-| `boot.js` | Launches runtime mode (Game or Builder) |
-| `main.js` | Central draw loop and mode dispatcher |
-| `builder.js` | Handles visual map editing & palette logic |
-| `levelLoader.js` | Loads sparse JSON into dense layer buffers |
-| `tileset.js` | Tile atlas registry and drawing helpers |
-| `dino.js` | Player entity (movement, gravity, physics) |
+## 📂 Folder Structure
+
+<details> <summary><b>📂 src/</b> — click to expand ▼</summary>
+
+  <details> <summary>~~🧩core/</summary> 
+
+      → runtime, renderer, camera (engine backbone)
+
+  </details>
+  <details> <summary>~~🛠 editor/</summary> 
+
+      → in-engine level editor
+  <details> <summary>~~~~🧮 grid/</summary> 
+
+      → grid rendering, snapping, and overlays
+
+  </details>
+  <details> <summary>~~~~🧾 hud/</summary> 
+
+      → bottom bar UI + tool info
+
+  </details>
+  <details> <summary>~~~~🎨 palette/</summary> 
+
+      → tilesheet & selection logic
+
+  </details>
+  <details> <summary>~~~~✏️ tools/</summary> 
+
+      → painting, erasing, and selection brushes
+
+  </details>
+  </details>
+  
+     
+<details> <summary>~~🧍 entities/</summary>
+
+      → player, coins, triggers (runtime objects)
+
+</details>
+<details> <summary>~~🎬 modes/</summary>
+
+      → editor.js / game.js / future cinema.js
+
+</details>
+<details> <summary>~~🖼️ assets/</summary>
+
+      → spritesheets, tilesets, and visual assets
+
+</details>
+<details> <summary>~~🧰 libraries/</summary>
+
+      → helper libraries (shared logic)
+
+</details>
+</details>
+
+<details> <summary><b>📂 levels/</b></summary>
+
+    → JSON-based levels
+
+</details>
+<details> <summary><b>📂 docs/</b></summary>
+
+    → demo GIFs, tileset docs, architecture notes
+
+</details>
+                   
+  <summary><b>🌀 index.html</b>→ entry point (launches both editor & runtime)</summary>
 
 ---
 
-## 🚧 Roadmap
-- [ ] Add HUD / text overlay for tool selection  
-- [ ] Expand builder export/import options  
-- [ ] Improve camera smoothness and layer handling  
-- [ ] Add parallax backgrounds and interactive tiles  
-- [ ] Refactor player collisions for multiple surfaces  
+## 🔗 Module Communication Protocol
+
+  - `main.js` bootstraps the app → owns the p5 lifecycle (setup/draw).
+
+  - `runtime.js` acts as the global state and orchestrator (shared `R` object).
+
+  - `core/renderer.js` handles all layer compositing and tile rendering.
+
+  - `modes/*` switch active logic (`editor.js` ↔ `game.js`) using `R.mode`.
+
+  - `editor/*` modules (grid, hud, tools) plug into runtime via `R.builder`.
+
+---
+
+## 🚀 Roadmap
+
+**v0.7 – Core Interaction**
+- [x] JSON import/export system
+- [x] HUD & hotkey help overlay
+- [ ] Smooth camera panning and zoom
+- [ ] Multiple brush modes (paint / erase / collision)
+
+**v0.8 – Physics & Feel**
+- [ ] Player physics integration
+- [ ] Layer-based collision system
+- [ ] Parallax and dynamic backgrounds
+
+**v0.9 – Polish & Release**
+- [ ] Refactor player collisions for multiple surfaces
+- [ ] Add UI feedback for tool selection
+- [ ] Performance pass + documentation polish
+
 
 ---
 
@@ -65,5 +153,3 @@ A modular 2D platformer built with **p5.js**, featuring player physics, level re
 💡 Exploring how logic and data structures translate into gameplay design and interactive systems.
 
 ---
-
-<img width="1845" height="784" alt="Capture" src="https://github.com/user-attachments/assets/dbcddfdf-500c-4d52-8656-9b9ccdfab312" />
