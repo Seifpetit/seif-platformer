@@ -44,6 +44,11 @@ A modular 2D platformer built with **p5.js**, featuring player physics, level re
 
 <details> <summary><b>📂 src/</b> — click to expand ▼</summary>
 
+  <details> <summary>~~🗂️assets/</summary> 
+
+      → tile_sheet.png / player.png, slice_tiles.py, slices folder
+
+  </details>
   <details> <summary>~~🧩core/</summary> 
 
       → runtime, renderer, camera (engine backbone)
