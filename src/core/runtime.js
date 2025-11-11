@@ -6,7 +6,7 @@ import { TILE_SIZE, fromId } from "./tileset.js";
 
 // ----- Runtime state -----
 export const R = {
-  mode: "game",                  // "game" | "builder"
+  mode: "builder",                  // "game" | "builder"
   cam: { x: 0, y: 0 },
   level: null,                   // { width, height, layers: {ground, detail, decoration, collision, ...} }
   entities: [],                  // e.g., [player]
@@ -16,6 +16,8 @@ export const R = {
     padX: 12,     // optional HUD/canvas padding if you need it later
     level: null,  // builder’s working level gets assigned in main.js setup()
     showHelp: true,
+    mode: 'tile',            // 'tile' | 'collision'
+    tool: 'brush',          // 'brush' | 'eraser' | 'picker'
 
   },
 

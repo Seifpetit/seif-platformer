@@ -1,8 +1,8 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // [GAME] Runtime rendering — camera, layers, entities, HUD
 // ─────────────────────────────────────────────────────────────────────────────
-import { R } from './runtime.js';
-import { drawLayer } from './levelLoader.js';
+import { R } from '../core/runtime.js';
+import { drawLayer } from '../core/levelLoader.js';
 // import { Dino } from './dino.js'; // if you spawn here
 
 // ─────────────────────────────────────────────────────────────────────────────

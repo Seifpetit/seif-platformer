@@ -1,13 +1,15 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // [BUILDER] Editor mode — grid on left, raw tilesheet (1:1) on right
 // ─────────────────────────────────────────────────────────────────────────────
-import { R } from './runtime.js';
-import { TILE_SIZE, TILE_COLS, id, srcRect } from './tileset.js';
-import { drawLayer , loadLevel } from './levelLoader.js';
+import { R } from '../core/runtime.js';
+import { TILE_SIZE } from '../core/tileset.js';
+import { drawLayer } from '../core/renderer.js';
+import { drawGrid } from '../editor/grid/index.js';
+import { drawPalette, hitTestPalette } from '../editor/palette.js';
+import * as brushes from '../editor/operations.js';
+import { drawHUD } from '../editor/hud.js';
 
 // --- HUD layout constants (local to builder) ---
-
-const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
 // ─────────────────────────────────────────────────────────────────────────────
 // [LOOP] Builder frame
@@ -22,105 +24,17 @@ export function drawBuilder(p, { gWorld, gOverlay, gHUD }) {
   drawLayer(gWorld, atlas, lvl.layers.ground, lvl.width, lvl.height, 0, 0);
 
   // 2) grid
-  gOverlay.stroke(60); gOverlay.noFill();
-  for (let x = 0; x <= lvl.width; x++) {
-    gOverlay.line(x * TILE_SIZE, 0, x * TILE_SIZE, lvl.height * TILE_SIZE);
-  }
-  for (let y = 0; y <= lvl.height; y++) {
-    gOverlay.line(0, y * TILE_SIZE, lvl.width * TILE_SIZE, y * TILE_SIZE);
-  }
-    gOverlay.noStroke();
+  drawGrid(gOverlay, lvl.width, lvl.height, TILE_SIZE, 60);
+
   // 3) raw palette — draw on the MAIN canvas LAST so it sits on top visually
   //    (we return its geometry so clicks can be mapped 1:1)
-  R.builder._paletteGeom = drawRawPalette(gHUD, atlas, p.width, p.height);
+  R.builder._paletteGeom = drawPalette(gHUD, atlas, p.width, p.height);
 
   // ─────────────────────────────────────────────
-    // [HELP OVERLAY] hotkey & control guide
-    // ─────────────────────────────────────────────
-    if (R.builder.showHelp) {
+  // [HUD/HELP OVERLAY] hotkey & control guide
+  // ─────────────────────────────────────────────
+  drawHUD(R, gHUD, p);
 
-        const lines = [
-            '[Click] Paint    [Right Click] Erase',
-            '[E] Export    [I] Import    [G] Playtest',
-            '[V] Toggle Grid    [H] Hide Help'
-        ];
- 
-        const x_helpOverlay = 0;
-        const y_helpoverlay = lvl.height * TILE_SIZE;
-        const h_helpOverlay = p.height - R.hud.dim.h - y_helpoverlay;
-        const w_helpOverlay = lvl.width*TILE_SIZE;
-
-        const textsize = 24;
-
-        gHUD.noStroke();
-        gHUD.fill(0, 0, 0, 150);
-        gHUD.rect(x_helpOverlay, y_helpoverlay, w_helpOverlay, h_helpOverlay);
-        gHUD.textAlign(gHUD.LEFT, gHUD.TOP);
-        gHUD.textSize(textsize);
-        gHUD.fill(200, 220);
-
-        let startY = y_helpoverlay + R.builder.padX;
-        for (let line of lines) {
-            gHUD.text(line, x_helpOverlay + R.builder.padX, startY);
-            startY += textsize;
-        }
-
-
-    }
-
-  // 5) HUD (bottom bar)
-  gHUD.stroke("orange");gHUD.strokeWeight(2); gHUD.fill(20); gHUD.rect(0, p.height - R.hud.dim.h - R.builder.padX, p.width, R.hud.dim.h); //rectangle
-  gHUD.noStroke();gHUD.fill(255); gHUD.textSize(14); gHUD.textAlign(gHUD.LEFT, gHUD.CENTER);
-  gHUD.text(`BUILDER  |  Selected: ${R.builder.selectedId || '—'}`, 12, p.height - R.hud.dim.h / 2 - R.builder.padX);//builder text
-    // GitHub link (cr
-    // eate once, then position each frame)
-    if (!R.hud.ghlink) {
-        R.hud.ghlink = p.createA("https://github.com/Seifpetit/seif-platformer", "View Source: GitHub ↗", "_blank");
-        R.hud.ghlink.style("font-size", "14px");
-        R.hud.ghlink.style("font-family", "monospace");
-        R.hud.ghlink.style("color", "#00baff");
-        R.hud.ghlink.style("text-decoration", "none");
-        R.hud.ghlink.style("background", "rgba(0,0,0,0.35)");
-        R.hud.ghlink.style("R.builder.padXding", "4px 8px");
-        R.hud.ghlink.style("border-radius", "6px");
-    }
-    R.hud.ghlink.show(); // ensure visible in Builder
-    const w = R.hud.ghlink.elt.offsetWidth || 0;
-    const x = p.width - w - R.builder.padX;
-    const y = p.height - R.hud.dim.h - R.builder.padX + (R.hud.dim.h - 18) / 2; // vertical center in bar
-    R.hud.ghlink.position(x, y);
-
-
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// [PALETTE] draw the RAW tilesheet 1:1 on the right, centered vertically
-// returns { panelX, oy, panelW, panelH } for input hit-testing
-// ─────────────────────────────────────────────────────────────────────────────
-function drawRawPalette(g, atlas, viewW, viewH) {
-     if (!atlas?.width) return null;
-  const panelW = atlas.width;              // 580
-  const panelX = viewW - panelW;           // flush-right
-   const oy     = 0; // vertical center
-  // backdrop
-  g.noStroke();
-  g.fill(0, 0, 0, 150);
-  g.rect(panelX, 0, panelW, viewH - R.hud.dim.h);
-  // IMPORTANT: make sure no old tint makes the image transparent
-  g.noTint?.();        // p5.Graphics supports tint; guard with ?.
-  // draw raw sheet 1:1
-  g.image(atlas, panelX, oy);
-  // selection highlight
-  const sid = R.builder.selectedId;
-  if (sid) {
-    const col = (sid - 1) % TILE_COLS;
-    const row = Math.floor((sid - 1) / TILE_COLS);
-    const hx  = panelX + col * TILE_SIZE;
-    const hy  = oy     + row * TILE_SIZE;
-    g.noFill(); g.stroke(255);
-    g.rect(hx, hy, TILE_SIZE, TILE_SIZE);
-  }
-  return { panelX, oy, panelW, panelH: atlas.height };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -162,19 +76,14 @@ export function builderWheel(p, e) {
 // simple keys to leave builder etc.
 export function builderKey(p) {
   const k = p.key.toLowerCase();
-    if (k === 'g') { 
-        R.mode = 'game'; 
-        R.RESET_FRAMES = 2; 
-        R.hud.ghlink?.hide();            // hide DOM link when switching to Game
-    }
-    if (k === 'e') exportLevel();
-    if (k === 'i') importLevel();
-    if (k === 'h') {
-    R.builder.showHelp = !R.builder.showHelp;
-        console.log(`Help overlay: ${R.builder.showHelp ? 'ON' : 'OFF'}`);
-    }
+  if (k === '1') R.builder.mode = 'tile';
+  if (k === '2') R.builder.mode = 'collision';
+  if (k === 'b') R.builder.tool = 'brush';
+  if (k === 'e') R.builder.tool = 'eraser';
+  if (k === 'i') R.builder.tool = 'picker';
+  if (k === 'h') R.hud.showHelp = !R.hud.showHelp;
 
-
+  if (k === 'g') { R.mode = 'game'; R.RESET_FRAMES = 2; } // link hides in game HUD
 }
 
 export function exportLevel() {
@@ -235,4 +144,24 @@ export function builderMouseHeld(p) {
   if (p.mouseIsPressed && p.mouseButton === p.RIGHT) {
     lvl.layers.ground[index] = 0;
   }
+}
+
+export function builderMouseDown(p) {
+  const geom = R.builder._paletteGeom;
+  const hit = hitTestPalette(R.atlas, geom, R.builder.mode, p.mouseX, p.mouseY);
+  if (hit.type === 'tile') { R.builder.selectedId = hit.id; return; }
+  if (hit.type === 'collision') { R.builder.selectedId = 1; return; }
+
+  const { gx, gy } = brushes.screenToGrid(p.mouseX, p.mouseY);
+  brushes.beginStroke(R, { gx, gy, button: p.mouseButton === p.RIGHT ? 2 : 0 });
+}
+
+export function builderMouseMove(p) {
+  if (!R.builder._painting) return;
+  const { gx, gy } = brushes.screenToGrid(p.mouseX, p.mouseY);
+  brushes.dragStroke(R, { gx, gy, button: p.mouseButton === p.RIGHT ? 2 : 0 });
+}
+
+export function builderMouseUp() {
+  brushes.endStroke(R);
 }

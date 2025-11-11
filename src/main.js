@@ -4,10 +4,10 @@
 // - Owns camera, toggles, and level switching
 // - Renders tile layers in order, then entities/effects, then debug overlays
 // ─────────────────────────────────────────────────────────────────────────────
-import { R } from './runtime.js';
-import { loadLevel } from './levelLoader.js';
-import { drawBuilder, builderKey, builderMouse, builderWheel, builderMouseHeld } from './builder.js';
-import { drawGame, gameKey, gameMouse, gameWheel } from './game.js';
+import { R } from './core/runtime.js';
+import { loadLevel } from './core/levelLoader.js';
+import { drawBuilder, builderKey, builderMouse, builderWheel, builderMouseHeld, builderMouseDown, builderMouseUp, builderMouseMove } from './modes/editor.js';
+import { drawGame, gameKey, gameMouse, gameWheel } from './modes/game.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // [LIFECYCLE] preload/setup
@@ -75,8 +75,20 @@ new window.p5(p => {
   // [INPUT] Dev hotkeys
   // Z/Space = jump (in game), B/G = switch mode
   // ───────────────────────────────────────────────────────────────────────────
-  p.keyPressed   = () => (R.mode === 'builder' ? builderKey(p)   : gameKey(p));
-  p.mousePressed = () => (R.mode === 'builder' ? builderMouse(p) : gameMouse(p));
+  p.keyPressed = () => (R.mode === 'builder' ? builderKey(p) : gameKey(p));
+
+  p.mousePressed = () => {
+    if (R.mode === 'builder') builderMouseDown(p); else gameMouse(p);
+  };
+  p.mouseDragged = () => {
+    if (R.mode === 'builder') builderMouseMove(p);
+  };
+  p.mouseReleased = () => {
+    if (R.mode === 'builder') builderMouseUp();
+  };
+
+  // prevent context menu (so right-click erases)
+  p.canvas?.addEventListener?.('contextmenu', e => e.preventDefault());
 
   p.windowResized = () => {
     p.resizeCanvas(window.innerWidth, window.innerHeight);
