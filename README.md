@@ -2,11 +2,18 @@
 
 A modular 2D engine built in JavaScript (p5.js) with a full in-engine level editor, runtime, and export system.
 
-## 🧱 Currently Working On
-Runtime-integrated **level builder** — a visual editor to create, export, and import `.json` maps directly inside the engine.  
-The builder supports multi-layer editing (ground, detail, decoration), scrolling tile palette, and instant game-mode switching (`B` ↔ `G`).
-
+### 🚀 v0.7 — Modular Runtime & Editor Upgrade  
 ![Builder Demo](./docs/builder-demo.gif)
+This version introduces a **runtime orchestrator**, **modular update/render layers**,  
+and a **live in-browser level editor** with import/export support.
+
+**Core Highlights**
+- 🔁 **Runtime Orchestrator** — unified `updateFrame()` and `renderFrame()` control.
+- 🧠 **Fully Modular Layers** — grid, palette, and HUD now handled independently.
+- 🧩 **Builder Mode** — draw tiles directly using right/left click.
+- 💾 **Level Import/Export** — save and load `.json` maps instantly.
+- 🎮 **Input System v2** — unified keyboard + mouse + touch abstraction.
+- 🧭 **Panel Layout System** — dynamic margins for grid/palette/HUD.
 
 ---
 
@@ -130,24 +137,11 @@ A modular 2D platformer built with **p5.js**, featuring player physics, level re
 
 ---
 
-## 🚀 Roadmap
-
-**v0.7 – Core Interaction**
-- [x] JSON import/export system
-- [x] HUD & hotkey help overlay
-- [ ] Smooth camera panning and zoom
-- [ ] Multiple brush modes (paint / erase / collision)
-
-**v0.8 – Physics & Feel**
-- [ ] Player physics integration
-- [ ] Layer-based collision system
-- [ ] Parallax and dynamic backgrounds
-
-**v0.9 – Polish & Release**
-- [ ] Refactor player collisions for multiple surfaces
-- [ ] Add UI feedback for tool selection
-- [ ] Performance pass + documentation polish
-
+### 🧩 Next Milestone (v0.8)
+- Entity placement system  
+- Camera controls  
+- Playtest toggle (Editor ↔ Game mode)  
+- Undo/redo & selection tools  
 
 ---
 
