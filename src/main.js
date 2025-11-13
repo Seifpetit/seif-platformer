@@ -4,10 +4,11 @@
 // - Owns camera, toggles, and level switching
 // - Renders tile layers in order, then entities/effects, then debug overlays
 // ─────────────────────────────────────────────────────────────────────────────
-import { R } from './core/runtime.js';
+import { R, updatePanelLayout } from './core/runtime.js';
 import { loadLevel } from './core/levelLoader.js';
-import { drawBuilder, builderKey, builderMouse, builderWheel, builderMouseHeld, builderMouseDown, builderMouseUp, builderMouseMove } from './modes/editor.js';
-import { drawGame, gameKey, gameMouse, gameWheel } from './modes/game.js';
+import { updateFrame, renderFrame } from './core/orchestrator.js';
+import { registerKeyboard, updateInput } from './core/input.js';
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // [LIFECYCLE] preload/setup
@@ -18,12 +19,14 @@ new window.p5(p => {
   let gWorld, gOverlay, gHUD;
 
   p.preload = () => {
-    R.atlas = p.loadImage('./src/assets/tile_sheet.png');
+    R.atlas = p.loadImage("src/assets/tile_sheet.png");
   };
 
   p.setup = async () => {
-    p.createCanvas(window.innerWidth - R.builder.padX, window.innerHeight - R.builder.padX); // "- R.builder.padX" //TEMP
+    p.createCanvas(window.innerWidth - R.builder.pad, window.innerHeight - R.builder.pad); // "- R.builder.padX" //TEMP
     p.noSmooth(); p.pixelDensity(1);
+    
+    p.image(R.atlas, 0, 0);  // draw once to ensure loaded
 
     // offscreen layers
     gWorld   = p.createGraphics(p.width, p.height);
@@ -44,47 +47,33 @@ new window.p5(p => {
         decoration: new Array(W*H).fill(0),
       }
     };
+
+    registerKeyboard(p);
+    updatePanelLayout(p);
+
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'o')) {
+        e.preventDefault();
+      }
+    });
+
   };
 
   // ───────────────────────────────────────────────────────────────────────────
   // [LOOP] Frame pipeline
-  // 1) early exit if assets/levels not ready
-  // 2) mode dispatch (builder vs game)
-  // 3) clear + composite: world → overlay → HUD
+  // clear + composite: world → overlay → HUD
   // ───────────────────────────────────────────────────────────────────────────
   p.draw = () => {
-    if (R.RESET_FRAMES > 0) { p.clear(); R.RESET_FRAMES--; }
+    p.clear(); // <── first
 
-    gWorld.clear(); gOverlay.clear(); gHUD.clear();
+    updateFrame(p);
+    renderFrame(p, { gWorld, gOverlay, gHUD });
+    
 
-    if (R.mode === 'builder') drawBuilder(p, { gWorld, gOverlay, gHUD });
-    else                      drawGame(p,    { gWorld, gOverlay, gHUD });
-
-    if (R.mode === 'builder' && p.mouseIsPressed) {
-      builderMouseHeld(p);
-    }
-
-
-    p.clear();
-    p.image(gWorld,   0, 0);
+    p.image(gWorld, 0, 0);
     p.image(gOverlay, 0, 0);
-    p.image(gHUD,     0, 0);
-  };
+    p.image(gHUD, 0, 0);
 
-  // ───────────────────────────────────────────────────────────────────────────
-  // [INPUT] Dev hotkeys
-  // Z/Space = jump (in game), B/G = switch mode
-  // ───────────────────────────────────────────────────────────────────────────
-  p.keyPressed = () => (R.mode === 'builder' ? builderKey(p) : gameKey(p));
-
-  p.mousePressed = () => {
-    if (R.mode === 'builder') builderMouseDown(p); else gameMouse(p);
-  };
-  p.mouseDragged = () => {
-    if (R.mode === 'builder') builderMouseMove(p);
-  };
-  p.mouseReleased = () => {
-    if (R.mode === 'builder') builderMouseUp();
   };
 
   // prevent context menu (so right-click erases)
@@ -92,6 +81,7 @@ new window.p5(p => {
 
   p.windowResized = () => {
     p.resizeCanvas(window.innerWidth, window.innerHeight);
+    updatePanelLayout(p);
     [gWorld, gOverlay, gHUD].forEach(g => g.resizeCanvas(p.width, p.height));
   };
 });

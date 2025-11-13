@@ -2,28 +2,43 @@
 // Central conductor: state, mode, render pipeline (layers + parallax), and HUD link.
 
 // ----- Imports -----
+
 import { TILE_SIZE, fromId } from "./tileset.js";
+import { Camera } from "../core/camera.js";
 
 // ----- Runtime state -----
 export const R = {
+
   mode: "builder",                  // "game" | "builder"
-  cam: { x: 0, y: 0 },
+  camera: Camera, // camera position and boubds
   level: null,                   // { width, height, layers: {ground, detail, decoration, collision, ...} }
   entities: [],                  // e.g., [player]
   atlas: null,                   // spritesheet image (p5.Image)
 
+  input: {
+    mouse:    { x: 0, y: 0, dx: 0, dy: 0, pressed: false, button: null },
+    touch:    { active: false, points: [] },
+    gamepad:  { connected: false, buttons: [], axes: [] },
+    keyboard: { keys: {} },
+    actions:  { moveX: 0, moveY: 0, paint: false },
+  },
+
   builder: {
-    padX: 12,     // optional HUD/canvas padding if you need it later
+    pad: 18,     // optional HUD/canvas padding if needed it later
     level: null,  // builder’s working level gets assigned in main.js setup()
-    showHelp: true,
     mode: 'tile',            // 'tile' | 'collision'
-    tool: 'brush',          // 'brush' | 'eraser' | 'picker'
+    panels: {
+      grid: { x: 0, y: 0, w: null, h: null },    // grid area (full canvas minus palette)
+      palette: { x: null, y: 0, w: null, h: null }, // palette area (right side)
+      hud: { x: 0, y: null, w: null, h: null},
+    },
 
   },
 
   RESET_FRAMES: 0,
 
   hud: {
+    showHelp: true,
     ghlink: null,                  // <a> element (p5 DOM)
     info: {
       layerName: "ground",
@@ -36,6 +51,7 @@ export const R = {
         w: 0,
         h: 40,
     }
+    
   },
 
   // Layer registry (add/remove layers with one row)
@@ -47,6 +63,7 @@ export const R = {
     { name: "entities",   kind: "entities", parallax: 1.0, order: 50 },
     { name: "hud",        kind: "hud",      parallax: 0.0, order: 90 },
   ],
+
 };
 
 // ----- Setup / teardown -----
@@ -118,102 +135,14 @@ export function nudgeCam(dx, dy) {
 
 // ----- Render pipeline -----
 
-export function renderFrame(p) {
-  const camX = R.cam.x, camY = R.cam.y;
-  if (!R.level) return;
+export function updatePanelLayout(p){
+  const atlas = R.atlas;
+  const paletteW = atlas ? atlas.width : 0;
+  const hudH = R.hud.dim.h;
 
-  // Sort passes by order (cheap, tiny list)
-  const passes = [...R.layers].sort((a, b) => a.order - b.order);
-
-  for (const L of passes) {
-    const offX = camX * L.parallax;
-    const offY = camY * L.parallax;
-
-    if (L.kind === "tile") {
-      const layerData = R.level.layers?.[L.name];
-      if (layerData && R.atlas) {
-        drawTileLayer(p, layerData, R.level.width, R.level.height, offX, offY, R.atlas);
-      }
-    }
-    else if (L.kind === "entities") {
-      drawEntities(p, R.entities, offX, offY);
-    }
-    else if (L.kind === "hud") {
-      drawHUD(p, R.hud.info);
-      positionHudLink(p); // keep the DOM link hugged to bottom-right
-    }
-  }
+  R.builder.panels.grid    = { x: 0, y: 0, w: p.width - paletteW, h: p.height - hudH };
+  R.builder.panels.palette = { x: p.width - paletteW, y: 0, w: paletteW, h: p.height - hudH };
+  R.builder.panels.hud     = { x: 0, y: p.height - hudH, w: p.width, h: hudH };
 }
 
-// ----- Drawers -----
 
-function drawTileLayer(p, layerArray, W, H, offX, offY, atlasImage) {
-  // Parallax-aware culling window
-  const left   = Math.floor(offX / TILE_SIZE);
-  const top    = Math.floor(offY / TILE_SIZE);
-  const colsOn = Math.ceil(p.width  / TILE_SIZE) + 2;
-  const rowsOn = Math.ceil(p.height / TILE_SIZE) + 2;
-
-  for (let gy = top; gy < top + rowsOn; gy++) {
-    if (gy < 0 || gy >= H) continue;
-    for (let gx = left; gx < left + colsOn; gx++) {
-      if (gx < 0 || gx >= W) continue;
-
-      const idx = gy * W + gx;
-      const id = layerArray[idx] | 0;
-      if (!id) continue;
-
-      const { col, row } = fromId(id);
-      const sx = col * TILE_SIZE;
-      const sy = row * TILE_SIZE;
-      const dx = gx * TILE_SIZE - offX;
-      const dy = gy * TILE_SIZE - offY;
-
-      p.image(atlasImage, dx, dy, TILE_SIZE, TILE_SIZE, sx, sy, TILE_SIZE, TILE_SIZE);
-    }
-  }
-}
-
-function drawEntities(p, entities, offX, offY) {
-  for (const e of entities) {
-    if (e && typeof e.draw === "function") {
-      e.draw(p, offX, offY);
-    }
-  }
-}
-
-function drawHUD(p, info) {
-  // Bottom bar background
-  p.noStroke();
-  p.fill(0, 0, 0, 120);
-  p.rect(0, p.height - 26, p.width, 26);
-
-  // Left status text
-  p.fill(255);
-  p.textSize(14);
-  p.textAlign(p.LEFT, p.CENTER);
-  const leftText =
-    `Mode: ${R.mode} | Layer: ${info.layerName} | Selected: ${info.selectedId}` +
-    (info.sizeText ? ` | ${info.sizeText}` : "") +
-    (info.mapName ? ` | ${info.mapName}` : "");
-  p.text(leftText, 10, p.height - 13);
-}
-
-function positionHudLink(p) {
-  if (!R.hud.link) return;
-  const w = R.hud.link.elt.offsetWidth || 0;
-  const x = p.width - w - 16;
-  const y = p.height - 26 + ((26 - 18) / 2); // vertically centered-ish in bar (18px text)
-  R.hud.link.position(x, y);
-}
-
-// ----- Convenience toggles (optional) -----
-
-export function toggleLayerVisible(name, on) {
-  // If you later add a 'visible' flag per layer, handle it here.
-  // Kept for future debug overlays (e.g., collision).
-}
-
-export function getCollisionLayer() {
-  return R.level?.layers?.collision || null;
-}

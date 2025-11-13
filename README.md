@@ -54,9 +54,8 @@ A modular 2D platformer built with **p5.js**, featuring player physics, level re
       → runtime, renderer, camera (engine backbone)
 
   </details>
-  <details> <summary>~~🛠 editor/</summary> 
+  <details> <summary>~~🛠 editor/→ in-engine level editor</summary> 
 
-      → in-engine level editor
   <details> <summary>~~~~🧮 grid/</summary> 
 
       → grid rendering, snapping, and overlays
