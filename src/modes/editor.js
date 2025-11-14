@@ -38,12 +38,8 @@ export function handleBuilderShortcuts(p) {
 
   if( p.keyPressed) {
 
-    console.log("ctrl:",ctrl);
-    console.log("s:",keys["s"]);
-    console.log("o:",keys["o"]);
-
-    if (keys["s"] ) {console.log("export"); exportLevel(); keys["s"]=false;}
-    if (keys["o"] ) {console.log("export"); importLevel(); keys["o"]=false;}
+    if (keys["s"] ) {exportLevel(); keys["s"]=false;}
+    if (keys["o"] ) {importLevel(); keys["o"]=false;}
 
   }
   

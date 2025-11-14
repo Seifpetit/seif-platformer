@@ -16,7 +16,7 @@ export function updateGrid(p) {
   const gy = Math.floor((m.y - G.y) / TILE_SIZE);
   const inside = gx >= 0 && gy >= 0 && gx < lvl.width && gy < lvl.height;
   
-  if( inside && m.pressed && m.button === "left")  applyToolAt(gx, gy);
+  if( inside && m.pressed )  applyToolAt(gx, gy);
 
 }
 

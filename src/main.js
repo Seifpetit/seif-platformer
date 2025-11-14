@@ -56,6 +56,15 @@ new window.p5(p => {
         e.preventDefault();
       }
     });
+    
+    window.addEventListener('contextmenu', (e) => {
+      const { offsetX: x, offsetY: y } = e;
+      const insideGrid = x >= R.builder.panels.grid.x && x < R.builder.panels.grid.x + R.builder.panels.grid.w &&
+                         y >= R.builder.panels.grid.y && y < R.builder.panels.grid.y + R.builder.panels.grid.h;
+
+      if (insideGrid) e.preventDefault();
+    
+    });
 
   };
 
