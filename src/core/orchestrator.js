@@ -3,11 +3,13 @@ import { R } from './runtime.js';
 import { updateInput } from './input.js';
 import { updateBuilder, renderBuilder } from '../modes/editor.js';
 import { updateGame, renderGame } from '../modes/game.js';
+import { updatePhysicsAll } from './physics.js';
 
 export function updateFrame(p) {
   
   updateInput(p);
-
+  updatePhysicsAll();
+  
   switch (R.mode) {
     case "builder": updateBuilder(p); break;
     case "game"   : updateGame(p);    break;

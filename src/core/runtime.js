@@ -9,11 +9,14 @@ import { Camera } from "../core/camera.js";
 // ----- Runtime state -----
 export const R = {
 
+  RESET_FRAMES: 0,
   mode: "builder",                  // "game" | "builder"
   camera: Camera, // camera position and boubds
-  level: null,                   // { width, height, layers: {ground, detail, decoration, collision, ...} }
-  entities: [],                  // e.g., [player]
+  level: null,                   // { width, height, layers: {ground, detail, decoration, collision, ...} }                
   atlas: null,                   // spritesheet image (p5.Image)
+
+  device: {
+  },
 
   input: {
     mouse:    { x: 0, y: 0, dx: 0, dy: 0, pressed: false, button: null },
@@ -24,18 +27,16 @@ export const R = {
   },
 
   builder: {
-    pad: 18,     // optional HUD/canvas padding if needed it later
+    pad: 20,     // optional HUD/canvas padding if needed it later
     level: null,  // builder’s working level gets assigned in main.js setup()
     mode: 'tile',            // 'tile' | 'collision'
     panels: {
-      grid: { x: 0, y: 0, w: null, h: null },    // grid area (full canvas minus palette)
+      grid: { x: 0, y: 0, w: null, h: null , rows: 24, cols: 44 },    // grid area (full canvas minus palette)
       palette: { x: null, y: 0, w: null, h: null }, // palette area (right side)
       hud: { x: 0, y: null, w: null, h: null},
     },
 
   },
-
-  RESET_FRAMES: 0,
 
   hud: {
     showHelp: true,
@@ -54,6 +55,8 @@ export const R = {
     
   },
 
+  entities: [],                     // e.g., [player]
+
   // Layer registry (add/remove layers with one row)
   layers: [
     { name: "background", kind: "tile",     parallax: 0.3, order: 10 },
@@ -65,6 +68,43 @@ export const R = {
   ],
 
 };
+
+// ----- Render pipeline -----
+
+export function updatePanelLayout(p) {
+  const pad = R.builder.pad;
+  const hudH = R.hud.dim.h;
+
+  // GRID FIXED
+  const G = R.builder.panels.grid;
+  G.w = G.cols * TILE_SIZE;
+  G.h = G.rows * TILE_SIZE;
+  G.x = 0;
+  G.y = 0;
+
+  // PALETTE = remaining width
+  const P = R.builder.panels.palette;
+  P.x = G.w + pad;
+  P.y = 0;
+  P.w = p.width - G.w - pad;
+  P.h = p.height - hudH;
+
+  // HUD
+  R.builder.panels.hud = {
+    x: 0,
+    y: p.height - hudH,
+    w: p.width,
+    h: hudH,
+  };
+
+  console.log("Panel layout updated:", R.builder.panels);
+}
+
+
+
+
+
+
 
 // ----- Setup / teardown -----
 
@@ -132,17 +172,4 @@ export function nudgeCam(dx, dy) {
   R.cam.x += dx;
   R.cam.y += dy;
 }
-
-// ----- Render pipeline -----
-
-export function updatePanelLayout(p){
-  const atlas = R.atlas;
-  const paletteW = atlas ? atlas.width : 0;
-  const hudH = R.hud.dim.h;
-
-  R.builder.panels.grid    = { x: 0, y: 0, w: p.width - paletteW, h: p.height - hudH };
-  R.builder.panels.palette = { x: p.width - paletteW, y: 0, w: paletteW, h: p.height - hudH };
-  R.builder.panels.hud     = { x: 0, y: p.height - hudH, w: p.width, h: hudH };
-}
-
 

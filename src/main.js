@@ -19,7 +19,7 @@ new window.p5(p => {
   let gWorld, gOverlay, gHUD;
 
   p.preload = () => {
-    R.atlas = p.loadImage("src/assets/tile_sheet.png");
+    R.atlas = p.loadImage("src/assets/world_tileset.png");
   };
 
   p.setup = async () => {

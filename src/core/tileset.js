@@ -4,7 +4,7 @@
 // TILE_COLS → spritesheet columns (for id ↔ (col,row) conversion)
 // ─────────────────────────────────────────────────────────────────────────────
 
-  export const TILE_SIZE = 20;
+  export const TILE_SIZE = 16;
   export const TILE_COLS = 29;
 
 // ─────────────────────────────────────────────────────────────────────────────

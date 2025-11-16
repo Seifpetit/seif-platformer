@@ -6,7 +6,9 @@ import { R } from "../core/runtime.js";
 export function getActiveTool() {
   const m = R.input.mouse;
   const k = R.input.keyboard;
-  console.log("mouse:", m, "mouse button:", m.button);
+
+  console.log("mouse:", m, "mouse button:", m.button); //{TEMP CONSOLE LOG}
+
   if (k["contrl"]) return "select";
   if (m.button === 'right') return "erase";
   return "paint";
