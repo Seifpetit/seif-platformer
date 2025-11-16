@@ -16,7 +16,18 @@ function computePaletteScale(atlas, P) {
   return targetH / nativeH;
 }
 
+export function getHoveredId(mx, my, dx, dy) {
+  const scale = computePaletteScale(R.atlas, R.builder.panels.palette);
+  const relX = (mx - dx) / scale;
+  const relY = (my - dy) / scale;
 
+  const cx = Math.floor(relX / TILE_SIZE);
+  const cy = Math.floor(relY / TILE_SIZE);
+
+  const id = cy * TILE_COLS + cx + 1;
+
+  return id;
+}
 // --------------------------------------------
 // UPDATE — handle selection
 // --------------------------------------------
@@ -37,17 +48,13 @@ export function updatePalette(p) {
   const inside =
     m.x >= dx && m.x < dx + drawW &&
     m.y >= dy && m.y < dy + drawH;
+  R.cursor.inPalette = inside;
 
   if (inside && m.pressed && m.button === 'left') {
 
-    const relX = (m.x - dx) / scale;
-    const relY = (m.y - dy) / scale;
-
-    const cx = Math.floor(relX / TILE_SIZE);
-    const cy = Math.floor(relY / TILE_SIZE);
-
-    const id = cy * TILE_COLS + cx + 1;
+    const id = getHoveredId(m.x, m.y, dx, dy);
     R.builder.selectedId = id;
+
   }
 }
 
@@ -77,7 +84,21 @@ export function renderPalette(g) {
 
   g.image(atlas, dx, dy, drawW, drawH);
 
-  // highlight
+  if (R.cursor.inPalette) {
+    const id = getHoveredId(R.input.mouse.x, R.input.mouse.y, dx, dy);
+    const z = id - 1;
+    const col = z % TILE_COLS;
+    const row = Math.floor(z / TILE_COLS);
+    const hx = dx + col * TILE_SIZE * scale;
+    const hy = dy + row * TILE_SIZE * scale;
+        g.push();
+        g.noFill();
+        g.stroke(0, 255, 255, 180); g.strokeWeight(2);
+        g.rect(hx, hy, TILE_SIZE * scale, TILE_SIZE * scale);
+        g.pop();
+  }
+
+  // highlight after selection
   const id = R.builder.selectedId;
   if (id) {
     const z = id - 1;

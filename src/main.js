@@ -8,6 +8,7 @@ import { R, updatePanelLayout } from './core/runtime.js';
 import { loadLevel } from './core/levelLoader.js';
 import { updateFrame, renderFrame } from './core/orchestrator.js';
 import { registerKeyboard, updateInput } from './core/input.js';
+import { TILE_SIZE } from './core/tileset.js';
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -20,11 +21,13 @@ new window.p5(p => {
 
   p.preload = () => {
     R.atlas = p.loadImage("src/assets/world_tileset.png");
+    R.builder.assets.cursor_k = p.loadImage("src/assets/pointer_k.png");
+    R.builder.assets.cursor_j = p.loadImage("src/assets/pointer_j.png");
   };
 
   p.setup = async () => {
     p.createCanvas(window.innerWidth - R.builder.pad, window.innerHeight - R.builder.pad); // "- R.builder.padX" //TEMP
-    p.noSmooth(); p.pixelDensity(1);
+    p.noSmooth(); p.pixelDensity(1); p.canvas.style.cursor = 'none';
     
     p.image(R.atlas, 0, 0);  // draw once to ensure loaded
 
@@ -82,6 +85,19 @@ new window.p5(p => {
     p.image(gWorld, 0, 0);
     p.image(gOverlay, 0, 0);
     p.image(gHUD, 0, 0);
+
+    if (R.builder.assets.cursor_j && !R.cursor.inPalette) {
+
+      p.image(R.builder.assets.cursor_j, R.cursor.x, R.cursor.y, TILE_SIZE, TILE_SIZE);
+      if (!R.cursor.inGrid) {
+        p.push();
+        p.noFill();
+        p.stroke(255, 255, 0, 180); p.strokeWeight(2);
+        p.rect(R.cursor.x, R.cursor.y, TILE_SIZE, TILE_SIZE);
+        p.pop();
+      }
+        
+      }
 
   };
 

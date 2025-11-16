@@ -5,6 +5,7 @@
 
 import { TILE_SIZE, fromId } from "./tileset.js";
 import { Camera } from "../core/camera.js";
+import { getHoveredId } from "../editor/palette.js";
 
 // ----- Runtime state -----
 export const R = {
@@ -27,7 +28,7 @@ export const R = {
   },
 
   builder: {
-    pad: 20,     // optional HUD/canvas padding if needed it later
+    pad: 32,     // optional HUD/canvas padding if needed it later
     level: null,  // builder’s working level gets assigned in main.js setup()
     mode: 'tile',            // 'tile' | 'collision'
     panels: {
@@ -35,8 +36,13 @@ export const R = {
       palette: { x: null, y: 0, w: null, h: null }, // palette area (right side)
       hud: { x: 0, y: null, w: null, h: null},
     },
-
+    assets: {},
+    selectedId: null,              // currently selected tile id
+    hoveredId: null,               // tile id under mouse in palette
   },
+
+  cursor: { x: 0, y: 0, tileX: 0, tileY: 0, inGrid: false, inPalette: false, inHud: false
+    },
 
   hud: {
     showHelp: true,
@@ -72,6 +78,10 @@ export const R = {
 // ----- Render pipeline -----
 
 export function updatePanelLayout(p) {
+  //step 1 fix dimensions
+  //step2 store/update values
+  //step3 create Rect as stroke fro the panels
+
   const pad = R.builder.pad;
   const hudH = R.hud.dim.h;
 
@@ -88,7 +98,7 @@ export function updatePanelLayout(p) {
   P.y = 0;
   P.w = p.width - G.w - pad;
   P.h = p.height - hudH;
-
+  
   // HUD
   R.builder.panels.hud = {
     x: 0,
@@ -96,14 +106,9 @@ export function updatePanelLayout(p) {
     w: p.width,
     h: hudH,
   };
+  const H = R.builder.panels.hud;
 
-  console.log("Panel layout updated:", R.builder.panels);
 }
-
-
-
-
-
 
 
 // ----- Setup / teardown -----

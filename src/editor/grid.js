@@ -24,10 +24,27 @@ export function updateGrid(p) {
         m.y >= G.y &&
         m.y < G.y + G.h;
 
+  R.cursor.inGrid = inside;
 
-  if (inside && m.pressed) {
-    applyToolAt(gx, gy);
+  if (!inside) {
+    R.cursor.tileX = gx;
+    R.cursor.tileY = gy;
+    R.cursor.x = G.x + gx * TILE_SIZE;
+    R.cursor.y = G.y + gy * TILE_SIZE;
+    return;
+
+  } else {
+    R.cursor.x = m.x; // hide cursor offscreen
+    R.cursor.y = m.y;
   }
+
+  R.cursor.tileX = gx;
+  R.cursor.tileY = gy;
+  R.cursor.x = G.x + gx * TILE_SIZE;
+  R.cursor.y = G.y + gy * TILE_SIZE;
+
+  if (m.pressed) applyToolAt(gx, gy);
+
 }
 
 
@@ -70,6 +87,8 @@ export function renderGrid(g) {
   drawGridLines(g);
 
 
+  drawCustomCursor(g);
+
   g.pop();
 }
 
@@ -111,5 +130,49 @@ export function drawGridLines(g) {
     g.line(G.x, ly, G.x + G.w, ly);
   }
   g.pop();
+
+}
+
+
+export function drawCustomCursor(g) {
+
+  const cursor = R.cursor;  
+  const assets = R.builder.assets;
+
+  if (!cursor.inGrid) return;
+
+  const id = R.builder.selectedId;
+
+  if (id && cursor.inGrid) {
+    const z = id - 1;
+    const sx = (z % TILE_COLS) * TILE_SIZE;
+    const sy = Math.floor(z / TILE_COLS) * TILE_SIZE;
+
+    g.image(
+      R.atlas, cursor.x, cursor.y, TILE_SIZE, TILE_SIZE,
+      sx, sy, TILE_SIZE, TILE_SIZE
+    );
+    g.push();
+    g.noFill();
+    g.stroke(0, 255, 255, 180); g.strokeWeight(2);
+    g.rect(cursor.x, cursor.y, TILE_SIZE, TILE_SIZE);
+    g.pop();
+    
+  }
+  else if( cursor.inGrid ){
+    g.push();
+    g.noFill();
+    g.stroke(0, 255, 255, 180); g.strokeWeight(2);
+    g.rect(cursor.x, cursor.y, TILE_SIZE, TILE_SIZE);
+    g.pop();
+  }
+  else {
+    if( assets.cursor_j ){ 
+      g.image(
+        assets.cursor_j, cursor.x, cursor.y, TILE_SIZE, TILE_SIZE
+      );
+    }
+  }
+    
 
 }
