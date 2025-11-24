@@ -5,8 +5,8 @@ import { applyToolAt } from './tools.js';
 
 
 export function updateGrid(p) {
-  const lvl = R.builder.level;
-  const G   = R.builder.panels.grid;
+  const lvl = R.layout.level;
+  const G   = R.layout.panels.grid;
   const m   = R.input.mouse;
 
   if (!lvl || !G) return;
@@ -49,8 +49,8 @@ export function updateGrid(p) {
 
 
 export function renderGrid(g) {
-  const lvl   = R.builder.level;
-  const G     = R.builder.panels.grid;
+  const lvl   = R.layout.level;
+  const G     = R.layout.panels.grid;
   const atlas = R.atlas;
 
   if (!lvl || !G || !atlas) return;
@@ -94,8 +94,8 @@ export function renderGrid(g) {
 
 export function drawHighlight(g) {
 
-  const lvl = R.builder.level;
-  const G = R.builder.panels.grid;
+  const lvl = R.layout.level;
+  const G = R.layout.panels.grid;
 
   if (!lvl || !G) return;
   g.push(); g.noStroke(); g.fill(255, 0, 0, 70); // translucent red overlay
@@ -113,7 +113,7 @@ export function drawHighlight(g) {
 
 export function drawGridLines(g) {
 
-  const G = R.builder.panels.grid;
+  const G = R.layout.panels.grid;
 
   if (!G) return;
   g.push(); g.stroke(60); g.noFill();
@@ -137,11 +137,11 @@ export function drawGridLines(g) {
 export function drawCustomCursor(g) {
 
   const cursor = R.cursor;  
-  const assets = R.builder.assets;
+  const assets = R.layout.assets;
 
   if (!cursor.inGrid) return;
 
-  const id = R.builder.selectedId;
+  const id = R.layout.selectedId;
 
   if (id && cursor.inGrid) {
     const z = id - 1;

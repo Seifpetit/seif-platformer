@@ -3,9 +3,9 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import { R } from '../core/runtime.js';
 import { exportLevel, importLevel } from '../core/import-export.js';
-import { updateGrid, renderGrid } from '../editor/grid.js';
-import { updatePalette, renderPalette } from '../editor/palette.js'; 
-import { renderHUD } from '../editor/hud.js';
+import { updateGrid, renderGrid } from '../editor/viewport.js';
+import { updatePalette, renderPalette } from '../editor/rightPanel.js'; 
+import { updateBottomDock, renderBottomDock } from '../editor/bottomDock/bottomDock.js';
 // ─────────────────────────────────────────────────────────────────────────────
 // [LOOP] Builder frame
 // Order: world → grid → PALETTE (last, on top) → HUD
@@ -17,6 +17,7 @@ export function updateBuilder(p) {
   
   updateGrid(p);
   updatePalette(p);
+  updateBottomDock();
 
 }
 
@@ -28,7 +29,7 @@ export function renderBuilder(p, { gWorld, gOverlay, gHUD }) {
 
   renderGrid(gWorld);
   renderPalette(gOverlay);
-  renderHUD(gHUD, p);
+  renderBottomDock(p);
 }
 
 export function handleBuilderShortcuts(p) {

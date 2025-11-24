@@ -17,7 +17,7 @@ function computePaletteScale(atlas, P) {
 }
 
 export function getHoveredId(mx, my, dx, dy) {
-  const scale = computePaletteScale(R.atlas, R.builder.panels.palette);
+  const scale = computePaletteScale(R.atlas, R.layout.panels.palette);
   const relX = (mx - dx) / scale;
   const relY = (my - dy) / scale;
 
@@ -28,12 +28,51 @@ export function getHoveredId(mx, my, dx, dy) {
 
   return id;
 }
+
+export function drawToolCursor(g, dx, dy, scale) {
+
+  if (R.cursor.inPalette) {
+    const hoverId = getHoveredId(R.input.mouse.x, R.input.mouse.y, dx, dy);
+    const z = hoverId - 1;
+    const col = z % TILE_COLS;
+    const row = Math.floor(z / TILE_COLS);
+    const hx = dx + col * TILE_SIZE * scale;
+    const hy = dy + row * TILE_SIZE * scale;
+    const hex1 = "#00ffff";
+    g.push();
+        g.noFill();
+        g.stroke(hex1); g.strokeWeight(2);
+        g.rect(hx, hy, TILE_SIZE * scale, TILE_SIZE * scale);
+        g.pop();
+
+   
+    
+  }
+   const selectId = R.layout.selectedId;
+  if (selectId) { // highlight after selection
+      const hex2 = "#ffff00";
+      const z = selectId - 1;
+      const col = z % TILE_COLS;
+      const row = Math.floor(z / TILE_COLS);
+      const hx = dx + col * TILE_SIZE * scale;
+      const hy = dy + row * TILE_SIZE * scale;
+      g.push();
+        g.noFill();
+        g.stroke(hex2); g.strokeWeight(2);
+        g.rect(hx, hy, TILE_SIZE * scale, TILE_SIZE * scale);
+        g.pop();
+  }
+
+
+}
+
+
 // --------------------------------------------
 // UPDATE — handle selection
 // --------------------------------------------
 export function updatePalette(p) {
   const atlas = R.atlas;
-  const P = R.builder.panels.palette;
+  const P = R.layout.panels.palette;
   const m = R.input.mouse;
   if (!atlas || !P) return;
 
@@ -53,7 +92,7 @@ export function updatePalette(p) {
   if (inside && m.pressed && m.button === 'left') {
 
     const id = getHoveredId(m.x, m.y, dx, dy);
-    R.builder.selectedId = id;
+    R.layout.selectedId = id;
 
   }
 }
@@ -64,7 +103,7 @@ export function updatePalette(p) {
 // --------------------------------------------
 export function renderPalette(g) {
   const atlas = R.atlas;
-  const P = R.builder.panels.palette;
+  const P = R.layout.panels.palette;
 
   if (!atlas || !P) return;
 
@@ -84,35 +123,7 @@ export function renderPalette(g) {
 
   g.image(atlas, dx, dy, drawW, drawH);
 
-  if (R.cursor.inPalette) {
-    const id = getHoveredId(R.input.mouse.x, R.input.mouse.y, dx, dy);
-    const z = id - 1;
-    const col = z % TILE_COLS;
-    const row = Math.floor(z / TILE_COLS);
-    const hx = dx + col * TILE_SIZE * scale;
-    const hy = dy + row * TILE_SIZE * scale;
-        g.push();
-        g.noFill();
-        g.stroke(0, 255, 255, 180); g.strokeWeight(2);
-        g.rect(hx, hy, TILE_SIZE * scale, TILE_SIZE * scale);
-        g.pop();
-  }
-
-  // highlight after selection
-  const id = R.builder.selectedId;
-  if (id) {
-    const z = id - 1;
-    const col = z % TILE_COLS;
-    const row = Math.floor(z / TILE_COLS);
-
-    const hx = dx + col * TILE_SIZE * scale;
-    const hy = dy + row * TILE_SIZE * scale;
-
-    g.noFill();
-    g.stroke(255,255,0);
-    g.strokeWeight(2);
-    g.rect(hx, hy, TILE_SIZE * scale, TILE_SIZE * scale);
-  }
+  drawToolCursor(g, dx, dy, scale);
 
   g.pop();
 }

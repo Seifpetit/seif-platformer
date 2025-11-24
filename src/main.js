@@ -9,7 +9,7 @@ import { loadLevel } from './core/levelLoader.js';
 import { updateFrame, renderFrame } from './core/orchestrator.js';
 import { registerKeyboard, updateInput } from './core/input.js';
 import { TILE_SIZE } from './core/tileset.js';
-
+import { updatePanelContents } from './editor/lens.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // [LIFECYCLE] preload/setup
@@ -21,12 +21,12 @@ new window.p5(p => {
 
   p.preload = () => {
     R.atlas = p.loadImage("src/assets/world_tileset.png");
-    R.builder.assets.cursor_k = p.loadImage("src/assets/pointer_k.png");
-    R.builder.assets.cursor_j = p.loadImage("src/assets/pointer_j.png");
+    R.layout.assets.cursor_k = p.loadImage("src/assets/pointer_k.png");
+    R.layout.assets.cursor_j = p.loadImage("src/assets/pointer_j.png");
   };
 
   p.setup = async () => {
-    p.createCanvas(window.innerWidth - R.builder.pad, window.innerHeight - R.builder.pad); // "- R.builder.padX" //TEMP
+    p.createCanvas(window.innerWidth - R.layout.pad, window.innerHeight - R.layout.pad); // "- R.layout.padX" //TEMP
     p.noSmooth(); p.pixelDensity(1); p.canvas.style.cursor = 'none';
     
     p.image(R.atlas, 0, 0);  // draw once to ensure loaded
@@ -39,9 +39,9 @@ new window.p5(p => {
     // Game: initial level
     R.level = await loadLevel('./levels/level2.json');
 
-    // Builder: blank map
+    // layout: blank map
     const W = 44, H = 24;  //W for nb of grid's columns , H for nb of rows 
-    R.builder.level = {
+    R.layout.level = {
       width: W, height: H,
       layers: {
         ground:     new Array(W*H).fill(0),
@@ -53,6 +53,7 @@ new window.p5(p => {
 
     registerKeyboard(p);
     updatePanelLayout(p);
+    updatePanelContents();
 
     window.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'o')) {
@@ -62,12 +63,14 @@ new window.p5(p => {
     
     window.addEventListener('contextmenu', (e) => {
       const { offsetX: x, offsetY: y } = e;
-      const insideGrid = x >= R.builder.panels.grid.x && x < R.builder.panels.grid.x + R.builder.panels.grid.w &&
-                         y >= R.builder.panels.grid.y && y < R.builder.panels.grid.y + R.builder.panels.grid.h;
+      const insideGrid = x >= R.layout.panels.grid.x && x < R.layout.panels.grid.x + R.layout.panels.grid.w &&
+                         y >= R.layout.panels.grid.y && y < R.layout.panels.grid.y + R.layout.panels.grid.h;
 
       if (insideGrid) e.preventDefault();
     
     });
+
+
 
   };
 
@@ -85,10 +88,11 @@ new window.p5(p => {
     p.image(gWorld, 0, 0);
     p.image(gOverlay, 0, 0);
     p.image(gHUD, 0, 0);
+    
 
-    if (R.builder.assets.cursor_j && !R.cursor.inPalette) {
+    if (R.layout.assets.cursor_j && !R.cursor.inPalette) {
 
-      p.image(R.builder.assets.cursor_j, R.cursor.x, R.cursor.y, TILE_SIZE, TILE_SIZE);
+      p.image(R.layout.assets.cursor_j, R.cursor.x, R.cursor.y, TILE_SIZE, TILE_SIZE);
       if (!R.cursor.inGrid) {
         p.push();
         p.noFill();
@@ -109,4 +113,5 @@ new window.p5(p => {
     updatePanelLayout(p);
     [gWorld, gOverlay, gHUD].forEach(g => g.resizeCanvas(p.width, p.height));
   };
+  
 });

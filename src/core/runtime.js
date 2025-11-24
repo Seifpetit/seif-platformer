@@ -3,9 +3,8 @@
 
 // ----- Imports -----
 
-import { TILE_SIZE, fromId } from "./tileset.js";
+import { TILE_SIZE } from "./tileset.js";
 import { Camera } from "../core/camera.js";
-import { getHoveredId } from "../editor/palette.js";
 
 // ----- Runtime state -----
 export const R = {
@@ -27,10 +26,10 @@ export const R = {
     actions:  { moveX: 0, moveY: 0, paint: false },
   },
 
-  builder: {
+  layout: {
     pad: 32,     // optional HUD/canvas padding if needed it later
-    level: null,  // builder’s working level gets assigned in main.js setup()
-    mode: 'tile',            // 'tile' | 'collision'
+    level: null,  // layout’s working level gets assigned in main.js setup()
+    mode: "tile",            // 'tile' | 'collision'
     panels: {
       grid: { x: 0, y: 0, w: null, h: null , rows: 24, cols: 44 },    // grid area (full canvas minus palette)
       palette: { x: null, y: 0, w: null, h: null }, // palette area (right side)
@@ -42,7 +41,29 @@ export const R = {
   },
 
   cursor: { x: 0, y: 0, tileX: 0, tileY: 0, inGrid: false, inPalette: false, inHud: false
+  },
+
+  ui: {
+    timelineMode: null,
+    panels: {
+      viewport: null,
+      right: null,
+      bottom: null,
     },
+
+    hover: {
+      inViewport: false,
+      inRightPanel: false,
+      inBottomDock: false,
+      inHudOverlay: false,
+    },
+
+    state: {
+      timelineOpen: false,
+      libraryOpen: false,
+    }
+
+  },
 
   hud: {
     showHelp: true,
@@ -82,31 +103,32 @@ export function updatePanelLayout(p) {
   //step2 store/update values
   //step3 create Rect as stroke fro the panels
 
-  const pad = R.builder.pad;
-  const hudH = R.hud.dim.h;
+  const pad = R.layout.pad;
+  
 
   // GRID FIXED
-  const G = R.builder.panels.grid;
+  const G = R.layout.panels.grid;
   G.w = G.cols * TILE_SIZE;
   G.h = G.rows * TILE_SIZE;
   G.x = 0;
   G.y = 0;
 
   // PALETTE = remaining width
-  const P = R.builder.panels.palette;
+  const P = R.layout.panels.palette;
   P.x = G.w + pad;
   P.y = 0;
   P.w = p.width - G.w - pad;
-  P.h = p.height - hudH;
+  P.h = G.h;
   
+  const hudH = p.height - Math.max(P.h, G.h) - pad;
   // HUD
-  R.builder.panels.hud = {
+  R.layout.panels.hud = {
     x: 0,
     y: p.height - hudH,
     w: p.width,
     h: hudH,
   };
-  const H = R.builder.panels.hud;
+
 
 }
 
@@ -127,7 +149,7 @@ export function initRuntime(p) {
     R.hud.link.style("background", "rgba(0,0,0,0.35)");
     R.hud.link.style("padding", "4px 8px");
     R.hud.link.style("border-radius", "6px");
-    R.hud.link.hide(); // shown only in builder mode
+    R.hud.link.hide(); // shown only in layout mode
   }
 }
 
@@ -162,7 +184,7 @@ export function setLevel(levelObj) {
 export function setMode(mode) {
   R.mode = mode;
   if (R.hud.link) {
-    if (mode === "builder") R.hud.link.show();
+    if (mode === "layout") R.hud.link.show();
     else R.hud.link.hide();
   }
 }
