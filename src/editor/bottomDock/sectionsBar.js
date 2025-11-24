@@ -72,7 +72,7 @@ export class SectionBar {
     const bw = this.w / count;
 
     this.buttons.forEach((btn, i) => {
-      console.log(this.x, this.y, this.w, this.h);
+
       btn.x = this.x + i * bw;
       btn.y = this.y;
       btn.w = bw;
@@ -87,7 +87,7 @@ export class SectionBar {
     g.rect(this.x, this.y ,this.w, this.h);
 
     for (const btn of this.buttons) {
-      btn.show(g);
+      btn.render(g);
     }
 
     g.pop();
@@ -110,7 +110,7 @@ class Button {
     this.hovered = false;
   }
 
-  show(g) {
+  render(g) {
     if(!g) return;
     g.push();
     let bg = 100;
@@ -118,6 +118,12 @@ class Button {
       g.fill(bg);
       
       g.rect(this.x, this.y, this.w, this.h);
+
+
+      g.textSize(14);
+      g.fill("orange");
+      console.log(this.mode, this.x + this.w/2, this.y+ this.h/2);
+      g.text(this.mode, this.x + this.w/2, this.y+ this.h/2);
     g.pop();
   }
 
