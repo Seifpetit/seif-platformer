@@ -6,10 +6,12 @@
 // ─────────────────────────────────────────────
 import { R } from "../../core/runtime.js";
 import { SectionBar } from "./sectionsBar.js";
+import { TimelinePanel } from "./timelinePanel/index.js";
 
 
 const dock = {
-  sectionBar: new SectionBar(),
+  bar: new SectionBar(),
+  panel: new TimelinePanel(),
 }
 
 // ─────────────────────────────────────────────
@@ -17,8 +19,17 @@ const dock = {
 // ─────────────────────────────────────────────
 export function updateBottomDock() {
 
-  const p = R.layout.panels.hud;
-  dock.sectionBar.update(p);
+  const P = R.layout.panels.bottomDock;
+
+  const BAR_HEIGHT = 40;
+  dock.bar.setGeometry(P.x, P.y, P.w, BAR_HEIGHT);
+  dock.panel.setGeometry(
+    P.x, P.y + BAR_HEIGHT,
+    P.w, P.h - BAR_HEIGHT
+  );
+
+  dock.bar.update(P);
+  dock.panel.update(P);
   
 }
 
@@ -28,28 +39,29 @@ export function updateBottomDock() {
 
 export function renderBottomDock(g) {
 
-  const dockPanel = R.layout.panels.hud;
+  const dockPanel = R.layout.panels.bottomDock;
 
-  const mode = R.ui.bottomDock;
+  g.push(); g.clear(); g.fill("gray"); g.rect(dockPanel.x, dockPanel.y, dockPanel.w, dockPanel.h);
 
-  g.push();
-  g.clear();
-  g.fill("green");
-  g.rect(dockPanel.x, dockPanel.y, dockPanel.w, dockPanel.h)
-  dock.sectionBar.render(g); 
+  dock.bar.render(g); 
 
-  g.fill("orange");
-  g.textSize(14);
-  g.text("Temp HelpText", dock.sectionBar.x,
-          dock.sectionBar.y + dock.sectionBar.h + 25);
-  g.text("CONTROL + S: SAVE LEVEL | CONTROL + O: OPEN LEVEL ", 
-          dock.sectionBar.x,
-          dock.sectionBar.y + dock.sectionBar.h + 50
-   );
+  if(R.ui.timelineMode === null) showHelpText(g);
+  else dock.panel.render(g);
 
   ensureGitHubLink(g);
   g.pop();
 
+}
+
+export function showHelpText(g) {
+  g.fill("orange");
+  g.textSize(14);
+  g.text("Temp HelpText", dock.bar.x,
+          dock.bar.y + dock.bar.h + 25);
+  g.text("CONTROL + S: SAVE LEVEL | CONTROL + O: OPEN LEVEL ", 
+          dock.bar.x,
+          dock.bar.y + dock.bar.h + 50
+   );
 }
 
 // ─────────────────────────────────────────────

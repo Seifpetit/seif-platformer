@@ -33,7 +33,8 @@ export const R = {
     panels: {
       grid: { x: 0, y: 0, w: null, h: null , rows: 24, cols: 44 },    // grid area (full canvas minus palette)
       palette: { x: null, y: 0, w: null, h: null }, // palette area (right side)
-      hud: { x: 0, y: null, w: null, h: null},
+      hud: { x: 0, y: null, w: null, h: null },
+      bottomDock: { x: 0, y: null, w: null, h: null },
     },
     assets: {},
     selectedId: null,              // currently selected tile id
@@ -45,6 +46,7 @@ export const R = {
 
   ui: {
     timelineMode: null,
+
     panels: {
       viewport: null,
       right: null,
@@ -122,7 +124,7 @@ export function updatePanelLayout(p) {
   
   const hudH = p.height - Math.max(P.h, G.h) - pad;
   // HUD
-  R.layout.panels.hud = {
+  R.layout.panels.bottomDock = {
     x: 0,
     y: p.height - hudH,
     w: p.width,
