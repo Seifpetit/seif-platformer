@@ -7,9 +7,8 @@
 import { R, updatePanelLayout } from './core/runtime.js';
 import { loadLevel } from './core/levelLoader.js';
 import { updateFrame, renderFrame } from './core/orchestrator.js';
-import { registerKeyboard, updateInput } from './core/input.js';
+import { registerKeyboard } from './core/input.js';
 import { TILE_SIZE } from './core/tileset.js';
-import { updatePanelContents } from './editor/lens.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // [LIFECYCLE] preload/setup
@@ -53,7 +52,6 @@ new window.p5(p => {
 
     registerKeyboard(p);
     updatePanelLayout(p);
-    updatePanelContents();
 
     window.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'o')) {

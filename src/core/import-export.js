@@ -1,4 +1,4 @@
-import {R} from './runtime.js';
+import { R } from "./runtime.js";
 
 export function exportLevel() {
 
@@ -31,7 +31,7 @@ export function handleFileInput(file) {
       const data = JSON.parse(e.target.result);  // raw JSON
       // optional: validate structure (width, height, layers)
       if (data.width && data.height && data.layers) {
-        R.builder.level = data;   // <- this line makes the grid redraw
+        R.layout.level = data;   // <- this line makes the grid redraw
         console.log('Level imported successfully:', data.name || '(unnamed)');
       } else {
         console.warn('Invalid level format');

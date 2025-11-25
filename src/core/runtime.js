@@ -31,7 +31,8 @@ export const R = {
     level: null,  // layout’s working level gets assigned in main.js setup()
     mode: "tile",            // 'tile' | 'collision'
     panels: {
-      grid: { x: 0, y: 0, w: null, h: null , rows: 24, cols: 44 },    // grid area (full canvas minus palette)
+      viewport: { x: 0, y: 0, w: null, h: null , rows: 24, cols: 44 }, 
+      grid:  { x: 0, y: 0, w: null, h: null , rows: 24, cols: 44 },   // grid area (full canvas minus palette)
       palette: { x: null, y: 0, w: null, h: null }, // palette area (right side)
       hud: { x: 0, y: null, w: null, h: null },
       bottomDock: { x: 0, y: null, w: null, h: null },
@@ -109,12 +110,13 @@ export function updatePanelLayout(p) {
   
 
   // GRID FIXED
-  const G = R.layout.panels.grid;
-  G.w = G.cols * TILE_SIZE;
-  G.h = G.rows * TILE_SIZE;
-  G.x = 0;
-  G.y = 0;
+  const G = R.layout.panels.viewport;
+    G.x = 0;
+    G.y = 0;
+    G.w = G.cols * TILE_SIZE + pad;
+    G.h = G.rows * TILE_SIZE + pad;
 
+  
   // PALETTE = remaining width
   const P = R.layout.panels.palette;
   P.x = G.w + pad;
