@@ -16,7 +16,7 @@ export class SectionBar {
   
   }
 
-  setGeometry(x, y, h, w) {
+  setGeometry(x, y, w, h) {
     this.x = x;
     this.y = y;
     this.w = w;
@@ -37,11 +37,11 @@ export class SectionBar {
     }
   }
 
-  update(panel) {
-    this.updateLayout(panel.x, panel.y, panel.w, panel.h);
+  update() {
+
+    this.updateButtons();
     this.checkButtonHover();
     
-
   }
 
   checkButtonHover() {
@@ -63,15 +63,6 @@ export class SectionBar {
     if( btn.hovered && m.pressed && m.button === "left") {
         R.ui.timelineMode = btn.mode;
       }
-  }
-
-  updateLayout(x, y, w, h) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = 50;
-
-    this.updateButtons();
   }
 
   updateButtons() {

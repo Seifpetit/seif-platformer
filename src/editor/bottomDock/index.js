@@ -22,14 +22,19 @@ export function updateBottomDock() {
   const P = R.layout.panels.bottomDock;
 
   const BAR_HEIGHT = 40;
-  dock.bar.setGeometry(P.x, P.y, P.w, BAR_HEIGHT);
+
+  dock.bar.setGeometry(
+    P.x, P.y, 
+    P.w, BAR_HEIGHT
+  );
+
   dock.panel.setGeometry(
     P.x, P.y + BAR_HEIGHT,
     P.w, P.h - BAR_HEIGHT
   );
 
-  dock.bar.update(P);
-  dock.panel.update(P);
+  dock.bar.update();
+  dock.panel.update();
   
 }
 

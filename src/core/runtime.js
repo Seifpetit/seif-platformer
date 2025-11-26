@@ -47,6 +47,7 @@ export const R = {
 
   ui: {
     timelineMode: null,
+    brushMode: null,
 
     panels: {
       viewport: null,

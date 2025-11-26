@@ -23,5 +23,11 @@ export function applyToolAt(gx, gy) {
   if (tool === "paint") { lvl.layers.ground[gy * lvl.width + gx] = R.layout.selectedId; }
   if (tool === "erase") { lvl.layers.ground[gy * lvl.width + gx] = 0; }
 
+  const BRUSH = R.ui.brushMode;
+
+  if (BRUSH === "PAINT" && !(tool === "erase")) { lvl.layers.ground[gy * lvl.width + gx] = R.layout.selectedId; }
+  if (BRUSH === "ERASE") { lvl.layers.ground[gy * lvl.width + gx] = 0; }
+
+
 }
 
