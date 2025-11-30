@@ -20,14 +20,22 @@ export function applyToolAt(gx, gy) {
   const lvl = R.layout.level;
 
   
-  if (tool === "paint") { lvl.layers.ground[gy * lvl.width + gx] = R.layout.selectedId; }
-  if (tool === "erase") { lvl.layers.ground[gy * lvl.width + gx] = 0; }
+  if (tool === "paint") { paint(lvl, gx, gy); }
+  if (tool === "erase") { erase(lvl, gx, gy); }
 
   const BRUSH = R.ui.brushMode;
 
-  if (BRUSH === "PAINT" && !(tool === "erase")) { lvl.layers.ground[gy * lvl.width + gx] = R.layout.selectedId; }
-  if (BRUSH === "ERASE") { lvl.layers.ground[gy * lvl.width + gx] = 0; }
+  if (BRUSH === "PAINT" && !(tool === "erase")) { paint(lvl, gx, gy); }
+  if (BRUSH === "ERASE") { erase(lvl, gx, gy); }
 
 
 }
 
+export function paint(lvl, gx, gy) {
+  lvl.layers.ground[gy * lvl.width + gx] =  R.ui.selectedAsset;
+  console.log(lvl.layers.ground[gy * lvl.width + gx]);
+}
+
+export function erase(lvl, gx, gy) {
+  lvl.layers.ground[gy * lvl.width + gx] = 0;
+}

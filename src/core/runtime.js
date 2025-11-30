@@ -13,7 +13,7 @@ export const R = {
   mode: "builder",                  // "game" | "builder"
   camera: Camera, // camera position and boubds
   level: null,                   // { width, height, layers: {ground, detail, decoration, collision, ...} }                
-  atlas: null,                   // spritesheet image (p5.Image)
+  atlas: {},                   // spritesheet image (p5.Image)
 
   device: {
   },
@@ -33,13 +33,12 @@ export const R = {
     panels: {
       viewport: { x: 0, y: 0, w: null, h: null , rows: 24, cols: 44 }, 
       grid:  { x: 0, y: 0, w: null, h: null , rows: 24, cols: 44 },   // grid area (full canvas minus palette)
-      palette: { x: null, y: 0, w: null, h: null }, // palette area (right side)
+      rightPanel: { x: null, y: 0, w: null, h: null }, // palette area (right side)
       hud: { x: 0, y: null, w: null, h: null },
       bottomDock: { x: 0, y: null, w: null, h: null },
     },
     assets: {},
-    selectedId: null,              // currently selected tile id
-    hoveredId: null,               // tile id under mouse in palette
+    
   },
 
   cursor: { x: 0, y: 0, tileX: 0, tileY: 0, inGrid: false, inPalette: false, inHud: false
@@ -48,6 +47,10 @@ export const R = {
   ui: {
     timelineMode: null,
     brushMode: null,
+    libraryPages: null,
+
+    selectedAsset: {},              // currently selected tile id
+    hoveredAsset: {},              // tile id under mouse in palette
 
     panels: {
       viewport: null,
@@ -119,7 +122,7 @@ export function updatePanelLayout(p) {
 
   
   // PALETTE = remaining width
-  const P = R.layout.panels.palette;
+  const P = R.layout.panels.rightPanel;
   P.x = G.w + pad;
   P.y = 0;
   P.w = p.width - G.w - pad;

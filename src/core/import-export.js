@@ -2,14 +2,14 @@ import { R } from "./runtime.js";
 
 export function exportLevel() {
 
-  const data = JSON.stringify(R.builder.level, null, 2);
+  const data = JSON.stringify(R.layout.level, null, 2);
   const blob = new Blob([data], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'level1.json';
   a.click();
   URL.revokeObjectURL(a.href);
-  console.log('Level exported:', R.builder.level);
+  console.log('Level exported:', R.layout.level);
 
 }
 
@@ -32,6 +32,7 @@ export function handleFileInput(file) {
       // optional: validate structure (width, height, layers)
       if (data.width && data.height && data.layers) {
         R.layout.level = data;   // <- this line makes the grid redraw
+            console.log(R.layout.level);
         console.log('Level imported successfully:', data.name || '(unnamed)');
       } else {
         console.warn('Invalid level format');

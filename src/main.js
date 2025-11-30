@@ -19,7 +19,15 @@ new window.p5(p => {
   let gWorld, gOverlay, gHUD;
 
   p.preload = () => {
-    R.atlas = p.loadImage("src/assets/world_tileset.png");
+    R.atlas.world_tileset = p.loadImage("src/assets/world_tileset.png");
+    R.atlas.coin = p.loadImage("src/assets/coin.png");
+    R.atlas.fruits = p.loadImage("src/assets/fruit.png");
+    R.atlas.knight = p.loadImage("src/assets/knight.png");
+    R.atlas.platforms = p.loadImage("src/assets/platforms.png");
+    R.atlas.slime_green = p.loadImage("src/assets/slime_green.png");
+    R.atlas.slime_purple = p.loadImage("src/assets/slime_purple.png");
+
+
     R.layout.assets.cursor_k = p.loadImage("src/assets/pointer_k.png");
     R.layout.assets.cursor_j = p.loadImage("src/assets/pointer_j.png");
   };
@@ -28,10 +36,10 @@ new window.p5(p => {
     p.createCanvas(window.innerWidth - R.layout.pad, window.innerHeight - R.layout.pad); // "- R.layout.padX" //TEMP
     p.noSmooth(); p.pixelDensity(1); p.canvas.style.cursor = 'none';
     
-    p.image(R.atlas, 0, 0);  // draw once to ensure loaded
 
     // offscreen layers
     gWorld   = p.createGraphics(p.width, p.height);
+    
     gOverlay = p.createGraphics(p.width, p.height);
     gHUD     = p.createGraphics(p.width, p.height);
 

@@ -3,7 +3,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import { R } from '../core/runtime.js';
 import { exportLevel, importLevel } from '../core/import-export.js';
-import { updatePalette, renderPalette } from '../editor/rightPanel.js'; 
+import { updateRightPanel, renderRightPanel } from '../editor/rightPanel/index.js'; 
 import { updateBottomDock, renderBottomDock } from '../editor/bottomDock/index.js';
 import { updateViewport, renderViewport } from '../editor/viewport/index.js';
 // ─────────────────────────────────────────────────────────────────────────────
@@ -16,19 +16,20 @@ export function updateBuilder(p) {
   handleBuilderShortcuts(p);
   
   updateViewport(p);
-  updatePalette(p);
+  updateRightPanel(p);
   updateBottomDock();
 
 }
 
 export function renderBuilder(p, { gWorld, gOverlay, gHUD }) {
-
+  
   gWorld.clear();
+  
   gOverlay.clear();
   gHUD.clear();
 
   renderViewport(gWorld);
-  renderPalette(gOverlay);
+  renderRightPanel(gOverlay);
   renderBottomDock(p);
 }
 

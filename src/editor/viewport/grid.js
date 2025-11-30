@@ -6,7 +6,8 @@ import { applyToolAt } from '../tools.js';
 
 export class Grid {
   constructor() {
-    this.x;this.y;this.w;this.h;this.cols;this.rows;
+    this.x;this.y;this.w;this.h;
+    this.cols;this.rows;
   }
 
   setGeometry(x, y, w, h, r, c) {
@@ -17,11 +18,26 @@ export class Grid {
     this.rows = r;
     this.cols = c;
   }
+  
+
+  checktileAtlas(ref) {
+
+    switch(ref){
+      case "WORLD_TILESET": return R.atlas.world_tileset;
+      case "COIN": return R.atlas.coin;
+      case "FRUITS": return R.atlas.fruits;
+      case "PLATFORMS": return R.atlas.platforms;
+    }
+
+
+  }
 
   update(p) {
 
     const lvl = R.layout.level;
     const m   = R.input.mouse;
+    
+    this.checktileAtlas();
 
     if (!lvl) return;
 
@@ -64,9 +80,8 @@ export class Grid {
 
   render(g) {
     const lvl   = R.layout.level;
-    const atlas = R.atlas;
 
-    if (!lvl || !atlas) return;
+    if (!lvl) return;
 
     g.push();
 
@@ -81,8 +96,9 @@ export class Grid {
         // convert panel coords to level coords
         if (gx >= lvl.width || gy >= lvl.height) continue;
 
-        const id = lvl.layers.ground[gy * lvl.width + gx];
-        if (!id) continue;
+        const id = lvl.layers.ground[gy * lvl.width + gx].id;
+        const REF = lvl.layers.ground[gy * lvl.width + gx].atlasRef;
+        if (!id || !REF) continue;
 
         const z = id - 1;
         const sx = (z % TILE_COLS) * TILE_SIZE;
@@ -90,7 +106,8 @@ export class Grid {
 
         const dx = this.x + gx * TILE_SIZE;
         const dy = this.y + gy * TILE_SIZE;
-
+        const atlas = this.checktileAtlas(REF);
+        
         g.image(atlas, dx, dy, TILE_SIZE, TILE_SIZE, sx, sy, TILE_SIZE, TILE_SIZE);
       }
     }
@@ -142,6 +159,14 @@ export class Grid {
 
   }
 
+  getCurrentAtlas() {
+    switch(R.ui.libraryPages){
+      case "WORLD_TILESET": return R.atlas.world_tileset;
+      case "COIN": return R.atlas.coin;
+      case "FRUITS": return R.atlas.fruits;
+      case "PLATFORMS": return R.atlas.platforms;
+    }
+  }
 
   drawCustomCursor(g) {
 
@@ -150,15 +175,15 @@ export class Grid {
 
     if (!cursor.inGrid) return;
 
-    const id = R.layout.selectedId;
+    const id = R.ui.selectedAsset.id;
 
     if (id && cursor.inGrid) {
       const z = id - 1;
       const sx = (z % TILE_COLS) * TILE_SIZE;
       const sy = Math.floor(z / TILE_COLS) * TILE_SIZE;
-
+      const pAtlas = this.getCurrentAtlas();
       g.image(
-        R.atlas, cursor.x, cursor.y, TILE_SIZE, TILE_SIZE,
+        pAtlas, cursor.x, cursor.y, TILE_SIZE, TILE_SIZE,
         sx, sy, TILE_SIZE, TILE_SIZE
       );
       g.push();
@@ -185,6 +210,7 @@ export class Grid {
       
 
   }
+
 
 }
 
