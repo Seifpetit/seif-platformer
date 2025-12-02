@@ -1,134 +1,81 @@
 import { R } from "../../core/runtime.js";
 
-
 export class topBarContainer {
 
-  constructor(x, y, w, h) {
-
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-
-    this.hovered = false;
-    this.buttons = []; 
-    this.initButtons();
-  
+  constructor() {
+    this.x = this.y = this.w = this.h = 0;
+    this.buttons = [];
   }
 
   setGeometry(x, y, w, h) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
+    this.x = x; this.y = y; this.w = w; this.h = h;
+    this.updateButtonGeometry();
   }
 
-  initButtons() {
-    const pages = [
-      { label: "world_tileset", page: "WORLD_TILESET" },
-      { label: "coin", page: "COIN" },
-      { label: "fruits", page: "FRUITS" },
-    ];
-
-    for (let p of pages) {
-
-      this.buttons.push( new Button(p.label, p.page) );
-      
-    }
+  setButtons(list) {
+    this.buttons = list.map(p => new Button(p.label, p.page));
+    this.updateButtonGeometry();
   }
 
-  update() {
-
-    this.updateButtons();
-    this.checkButtonHover();
-    
-  }
-
-  checkButtonHover() {
-
-    const m = R.input.mouse;
-
-    for(const btn of this.buttons) {
-      const inside = m.x >= btn.x && m.x <= btn.x + btn.w 
-                  && m.y >= btn.y && m.y <= btn.y + btn.h;
-
-      btn.hovered = inside;
-      this.checkButtonInput(btn, m);
-      
-    }
-
-  }
-
-  checkButtonInput(btn, m) {
-    if( btn.hovered && m.pressed && m.button === "left") {
-        R.ui.libraryPages = btn.page;
-      }
-  }
-
-  updateButtons() {
+  updateButtonGeometry() {
     const count = this.buttons.length;
+    if (count === 0) return;
+
     const bw = this.w / count;
-
     this.buttons.forEach((btn, i) => {
-
       btn.x = this.x + i * bw;
       btn.y = this.y;
       btn.w = bw;
       btn.h = this.h;
-      
     });
   }
 
-  render(g) {
-    if(!g) return;
-    g.push();g.noStroke();
-    g.fill(25);
-    g.rect(this.x, this.y ,this.w, this.h);
-      
-
-    for (const btn of this.buttons) {
-      
-      btn.render(g);
-    }
-
-    g.pop();
-
+  update() {
+    this.buttons.forEach(btn => btn.update());
   }
 
+  render(g) {
+    g.push();
+    g.fill(30);
+    g.rect(this.x, this.y, this.w, this.h);
+
+    this.buttons.forEach(btn => btn.render(g));
+    g.pop();
+  }
 }
 
 class Button {
 
-  constructor(l = null, p = null, x = null, y = null, w = null, h = null) {
-    this.label = l;
-    this.page = p;
+  constructor(label, page) {
+    this.label = label;
+    this.page  = page;
+    this.x = this.y = this.w = this.h = 0;
+  }
 
-    this.x    = x;
-    this.y    = y;
-    this.w    = w;
-    this.h    = h;
+  update() {
+    const m = R.input.mouse;
 
-    this.hovered = false;
-    
+    const inside =
+      m.x >= this.x && m.x <= this.x + this.w &&
+      m.y >= this.y && m.y <= this.y + this.h;
+
+    if (inside && m.pressed && m.button === "left") {
+      R.ui.selectedPage = this.page;
+    }
   }
 
   render(g) {
+    const isActive = (R.ui.selectedPage === this.page);
 
-    if(!g) return;
     g.push();
-    let bg = 100;
-      if(this.hovered) bg = 0;
-      g.fill(bg);
-      
-      g.rect(this.x, this.y, this.w, this.h);
 
-      g.textAlign(g.CENTER, g.CENTER);
-      g.textSize(14);
-      g.fill("orange");
-      
-      g.text(this.label, this.x + this.w/2, this.y+ this.h/2);
+    g.fill(isActive ? "#ffaa00" : "#444");
+    g.rect(this.x, this.y, this.w, this.h);
+
+    g.fill(isActive ? "black" : "orange");
+    g.textAlign(g.CENTER, g.CENTER);
+    g.text(this.label, this.x + this.w/2, this.y + this.h/2);
+
     g.pop();
-
   }
-
 }

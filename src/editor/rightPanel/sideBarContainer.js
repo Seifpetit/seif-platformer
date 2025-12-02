@@ -1,198 +1,85 @@
-import { R } from "../../../src/core/runtime.js";
-
+import { R } from "../../core/runtime.js";
+import { BOOKS } from "./pages.js";
+import { onBookSelected } from "./index.js";
 
 export class sideBarContainer {
 
-  constructor(x, y, w, h) {
+  constructor() {
+    this.x = this.y = this.w = this.h = 0;
+    this.buttons = [];
 
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-
-    this.buttons = []; 
-    this.initButtons();
-  
+    for (let b of BOOKS)
+      this.buttons.push(new Button(b.label, b.ref));
   }
 
   setGeometry(x, y, w, h) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-  }
-
-  initButtons() {
-    const books = [
-      { label: "Tiles", ref: "Tiles" },
-      { label: "Entities", ref: "Entities" },
-      { label: "Audio", ref: "Audio" },
-      { label: "Logic", ref: "Logic" },
-      { label: "Files", ref: "Files" },
-      { label: "...", ref: "..." },
-    ];
-
-    for (let b of books) {
-
-      this.buttons.push( new Button(b.label, b.ref) );
-      
-    }
-    
+    this.x = x; this.y = y; this.w = w; this.h = h;
   }
 
   update() {
     const count = this.buttons.length;
     const bh = this.h / count;
-    const books = this.buttons;
-    let i = 0;
-    for (let b of books) {
-      b.mouseInsideButton();
-      b.setGeometry(this.x, this.y + i * bh,
-                    this.w, bh
-      );
-      i++;
-    }
-    
+
+    this.buttons.forEach((btn, i) => {
+      btn.setGeometry(this.x, this.y + i * bh, this.w, bh);
+      btn.update();
+    });
   }
 
   render(g) {
-    if(!g) return;
-    g.push();
-
-    for (const btn of this.buttons) {
-      if(btn.book === R.ui.selectedBook) btn.renderSelectedBook(g);
-      else if(btn.book === R.ui.hoveredBook) {btn.renderHoveredBook(g)}
-      else {btn.renderRestBooks(g);}
-
-    }
-
-    g.pop();
-
+    if (!g) return;
+    for (let btn of this.buttons) btn.render(g);
   }
-
 }
 
 class Button {
 
-  constructor(l = null, b = null, x = null, y = null, w = null, h = null) {
-    this.label = l;
-    this.book = b;
-
-    this.x    = x;
-    this.y    = y;
-    this.w    = w;
-    this.h    = h;
-
-    
-  }
-
-  mouseInsideButton() {
-
-    const m = R.input.mouse;
-      if (this.x === null || this.y === null || this.w === null || this.h === null) {
-        R.ui.hoveredBook = null;
-        return;
-      }
-      let insideBar = false;
-      const inside = m.x >= this.x && m.x <= this.x + this.w 
-                  && m.y >= this.y && m.y <= this.y + this.h;
-      if(inside) {
-        R.ui.hoveredBook = this.book;
-        this.checkButtonInput(inside, m);
-        return insideBar = true;
-      }
-      return insideBar;
-      
-      
-  }
-
-  checkButtonInput(inside, m) {
-    if( inside && m.pressed && m.button === "left") {
-        R.ui.selectedBook = R.ui.hoveredBook;
-      }
+  constructor(label, ref) {
+    this.label = label;
+    this.ref   = ref;
+    this.x = this.y = this.w = this.h = 0;
   }
 
   setGeometry(x, y, w, h) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
+    this.x = x; this.y = y; this.w = w; this.h = h;
   }
 
-  renderHoveredBook(g) {
-    if(!g) return;
-    g.push();
-    const TLradius = 3;
-    const TRradius = 3;
-    const BRradius = 3;
-    const BLradius = 12;
+  update() {
+    const m = R.input.mouse;
 
-    let bg = 100;
-    g.stroke("#1d1d1dff");g.strokeWeight(2);g.strokeCap("ROUND");
-      g.fill("#d59c3fab");
-      g.rect(this.x, this.y, this.w, this.h,
-              TLradius, TRradius, BRradius, BLradius);
-              
+    const inside =
+      m.x >= this.x && m.x <= this.x + this.w &&
+      m.y >= this.y && m.y <= this.y + this.h;
 
-      g.fill("#000000ff");g.noStroke();
-      g.textAlign(g.VERTICAL);
-      g.textAlign(g.CENTER, g.CENTER);
-      g.textSize(14);
-      
-      
-      g.text(this.label, this.x + this.w/2, this.y+ this.h/2);
-    g.pop();
+    if (inside) {
+      R.ui.hoveredBook = this.ref;
+      if (m.pressed && m.button === "left") {
+        onBookSelected(this.ref);
+      }
+    }
   }
 
-  renderRestBooks(g) {
-    if(!g) return;
+  render(g) {
+    const isActive  = (R.ui.selectedBook === this.ref);
+    const isHover   = (R.ui.hoveredBook === this.ref);
+
     g.push();
-    const TLradius = 3;
-    const TRradius = 3;
-    const BRradius = 3;
-    const BLradius = 12;
+    g.noStroke();
 
-    let bg = 100;
-    g.stroke("#fc9714ff");g.strokeWeight(2);g.strokeCap("ROUND");
-      g.fill("#26262648");
-      g.rect(this.x, this.y, this.w, this.h,
-              TLradius, TRradius, BRradius, BLradius);
-              
-
-      g.fill("#463d31ff");g.noStroke();
-      g.textAlign(g.VERTICAL);
-      g.textAlign(g.CENTER, g.CENTER);
-      g.textSize(14);
-      
-      
-      g.text(this.label, this.x + this.w/2, this.y+ this.h/2);
-    g.pop();
-
-  }
-
-  renderSelectedBook(g) {
-    if(!g) return;
-    g.push();
-    const TLradius = 3;
-    const TRradius = 3;
-    const BRradius = 3;
-    const BLradius = 12;
-
-    let bg = 100;
-    g.stroke("#1d1d1dff");g.strokeWeight(2);g.strokeCap("ROUND");
+    if (isActive) {
       g.fill("orange");
-      g.rect(this.x, this.y, this.w, this.h,
-              TLradius, TRradius, BRradius, BLradius);
-              
+    } else if (isHover) {
+      g.fill("#d59c3fbb");
+    } else {
+      g.fill("#262626");
+    }
 
-      g.fill("#000000ff");g.noStroke();
-      g.textAlign(g.VERTICAL);
-      g.textAlign(g.CENTER, g.CENTER);
-      g.textSize(14);
-      
-      
-      g.text(this.label, this.x + this.w/2, this.y+ this.h/2);
+    g.rect(this.x, this.y, this.w, this.h, 6);
+
+    g.fill(isActive ? "black" : "orange");
+    g.textAlign(g.CENTER, g.CENTER);
+    g.text(this.label, this.x + this.w/2, this.y + this.h/2);
+
     g.pop();
   }
-
 }

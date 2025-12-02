@@ -1,57 +1,44 @@
-import { R } from "../../../src/core/runtime.js";
-import { Palette } from "./palette.js";
-
+import { R } from "../../core/runtime.js";
+import { Palette } from "./pages/palette.js";
 
 export class ContentContainer {
 
-  constructor(x, y, h, w) {
+  constructor() {
+    this.x = this.y = this.w = this.h = 0;
 
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-
-    this.hovered = false;
-    this.pages = {    
+    this.pages = {
       PALETTE: new Palette(),
-    }
-    this.atlas = null;
-  
+    };
   }
 
   setGeometry(x, y, w, h) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-
+    this.x = x; this.y = y; this.w = w; this.h = h;
   }
 
-  update() {  
-    
-    this.pages.PALETTE.setGeometry(this.x, this.y, this.w, this.h);
+  update() {
 
-    
-    switch(R.ui.libraryPages){
-      case "WORLD_TILESET": this.atlas = R.atlas.world_tileset; break;
-      case "COIN": this.atlas = R.atlas.coin; break;
-      case "FRUITS": this.atlas = R.atlas.fruits; break;
-      case "PLATFORMS": this.atlas = R.atlas.platforms; break;
+    if (R.ui.selectedBook === "TILES") {
+      this.pages.PALETTE.setGeometry(this.x, this.y, this.w, this.h);
+
+      let atlas = null;
+      switch (R.ui.selectedPage) {
+        case "WORLD_TILESET": atlas = R.atlas.world_tileset; break;
+        case "COIN":          atlas = R.atlas.coin; break;
+        case "FRUITS":        atlas = R.atlas.fruits; break;
+      }
+
+      this.pages.PALETTE.update(atlas);
     }
-    this.pages.PALETTE.setGeometry(this.x, this.y, this.w, this.h);  
-    this.pages.PALETTE.update(this.atlas);
-
-    
   }
 
   render(g) {
-    if(!g) return;
-    g.push();g.noStroke();
+    g.push();
     g.fill(25);
-    g.rect(this.x, this.y ,this.w, this.h);
-    this.pages.PALETTE.render(g);
+    g.rect(this.x, this.y, this.w, this.h);
+
+    if (R.ui.selectedBook === "TILES")
+      this.pages.PALETTE.render(g);
+
     g.pop();
-
   }
-
 }

@@ -4,7 +4,7 @@ import { topBarContainer } from "./topBarContainer.js";
 import { sideBarContainer } from "./sideBarContainer.js";
 import { ContentContainer } from "./contentContainer.js";
 
-
+import { BOOKS, PAGES } from "./pages.js";
 
 const rightPanel = {
 
@@ -14,6 +14,29 @@ const rightPanel = {
 
   booksBar: new sideBarContainer(),
 
+}
+
+
+/* -------------------------------
+   BOOK SELECTION LOGIC
+--------------------------------*/
+export function onBookSelected(bookRef) {
+
+  // 1. Update selected book
+  R.ui.selectedBook = bookRef;
+
+  // 2. Build page list
+  const pageList = PAGES[bookRef] || [];
+
+  // 3. Update runtime state
+  R.ui.topBarButtons = pageList;
+
+  // 4. Auto-select first page
+  if (pageList.length > 0)
+    R.ui.selectedPage = pageList[0].page;
+
+  // 5. Refresh PagesBar UI
+  rightPanel.pagesBar.setButtons(pageList);
 }
 
 

@@ -46,9 +46,12 @@ export const R = {
     timelineMode: null,
     brushMode: null,
     
-    libraryPages: null,
-    hoveredBook: null,
+    selectedPage: null,
     selectedBook: null,
+    hoveredPage: null,
+    hoveredBook: null,
+
+    topBarButtons: [],
 
     selectedAsset: {},              // currently selected tile id
     hoveredAsset: {},              // tile id under mouse in palette
