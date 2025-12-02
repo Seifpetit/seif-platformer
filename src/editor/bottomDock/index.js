@@ -99,7 +99,7 @@ function ensureGitHubLink(p) {
 
   const w = R.hud.ghlink.elt.offsetWidth || 0;
   const x = p.width - w + 10;
-  const y = R.layout.panels.hud.y + R.layout.panels.hud.h + R.layout.panels.pad;
+  const y = R.layout.panels.bottomDock.y + R.layout.panels.bottomDock.h + R.layout.panels.pad;
   
   const link = R.hud.ghlink;
   link.position(x, y);

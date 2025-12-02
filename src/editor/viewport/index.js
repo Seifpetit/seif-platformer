@@ -43,9 +43,7 @@ export function updateViewport(p) {
 
 export function renderViewport(g) {
 
-  const viewportPanelPanel = R.layout.panels.viewport;
-
-  g.push(); g.clear(); g.fill(20, 20, 20, 20); g.rect(viewportPanelPanel.x, viewportPanelPanel.y, viewportPanelPanel.w, viewportPanelPanel.h);
+  g.push(); g.clear(); 
 
   viewportPanel.grid.render(g); 
   viewportPanel.brushBar.render(g);

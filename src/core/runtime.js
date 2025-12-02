@@ -32,9 +32,7 @@ export const R = {
     mode: "tile",            // 'tile' | 'collision'
     panels: {
       viewport: { x: 0, y: 0, w: null, h: null , rows: 24, cols: 44 }, 
-      grid:  { x: 0, y: 0, w: null, h: null , rows: 24, cols: 44 },   // grid area (full canvas minus palette)
       rightPanel: { x: null, y: 0, w: null, h: null }, // palette area (right side)
-      hud: { x: 0, y: null, w: null, h: null },
       bottomDock: { x: 0, y: null, w: null, h: null },
     },
     assets: {},
@@ -47,7 +45,10 @@ export const R = {
   ui: {
     timelineMode: null,
     brushMode: null,
+    
     libraryPages: null,
+    hoveredBook: null,
+    selectedBook: null,
 
     selectedAsset: {},              // currently selected tile id
     hoveredAsset: {},              // tile id under mouse in palette
@@ -117,19 +118,20 @@ export function updatePanelLayout(p) {
   const G = R.layout.panels.viewport;
     G.x = 0;
     G.y = 0;
-    G.w = G.cols * TILE_SIZE + pad;
-    G.h = G.rows * TILE_SIZE + pad;
+    G.w = G.cols * TILE_SIZE ;
+    G.h = G.rows * TILE_SIZE ;
 
   
-  // PALETTE = remaining width
+  // RIGHT PANEL = remaining width
   const P = R.layout.panels.rightPanel;
-  P.x = G.w + pad;
+  P.x = G.w + pad * 2;
   P.y = 0;
   P.w = p.width - G.w - pad;
   P.h = G.h;
   
-  const hudH = p.height - Math.max(P.h, G.h) - pad;
-  // HUD
+  const hudH = p.height - Math.max(P.h, G.h) - pad * 2;
+
+  // BOTTOM DOCK = remaining height
   R.layout.panels.bottomDock = {
     x: 0,
     y: p.height - hudH,

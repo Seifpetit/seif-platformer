@@ -69,8 +69,8 @@ new window.p5(p => {
     
     window.addEventListener('contextmenu', (e) => {
       const { offsetX: x, offsetY: y } = e;
-      const insideGrid = x >= R.layout.panels.grid.x && x < R.layout.panels.grid.x + R.layout.panels.grid.w &&
-                         y >= R.layout.panels.grid.y && y < R.layout.panels.grid.y + R.layout.panels.grid.h;
+      const insideGrid = x >= R.layout.panels.viewport.x && x < R.layout.panels.viewport.x + R.layout.panels.viewport.w &&
+                         y >= R.layout.panels.viewport.y && y < R.layout.panels.viewport.y + R.layout.panels.viewport.h;
 
       if (insideGrid) e.preventDefault();
     

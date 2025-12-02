@@ -1,9 +1,9 @@
-import { R } from "../../../src/core/runtime.js";
+import { R } from "../../core/runtime.js";
 
 
-export class BarContainer {
+export class topBarContainer {
 
-  constructor(x, y, h, w) {
+  constructor(x, y, w, h) {
 
     this.x = x;
     this.y = y;

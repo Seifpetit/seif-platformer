@@ -86,7 +86,7 @@ export class Grid {
     g.push();
 
     g.noStroke();
-    //g.fill(15); //background
+    g.fill(20, 20, 20, 20);  //background
     g.rect(this.x, this.y, this.w, this.h);
 
     // draw tiles

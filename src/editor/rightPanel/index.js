@@ -1,33 +1,57 @@
 // palette.js
 import { R } from "../../core/runtime.js";
-import { BarContainer } from "./barContainer.js";
+import { topBarContainer } from "./topBarContainer.js";
+import { sideBarContainer } from "./sideBarContainer.js";
 import { ContentContainer } from "./contentContainer.js";
 
+
+
 const rightPanel = {
-  pageBar: new BarContainer(),
-  pageContent: new ContentContainer()
+
+  pagesBar: new topBarContainer(),
+  
+  pageContent: new ContentContainer(),
+
+  booksBar: new sideBarContainer(),
+
 }
+
 
 export function updateRightPanel() {
 
   const PANEL = R.layout.panels.rightPanel;
-  const BAR_HEIGHT = 50;
-  const BAR_X = PANEL.x;
-  const BAR_Y = PANEL.y;
-  const BAR_W = PANEL.w;
-  const BAR_H = BAR_HEIGHT;
+  const PAD = R.layout.pad;
 
+  const TOP_BAR_X = PANEL.x;
+  const TOP_BAR_Y = PANEL.y;
+  const TOP_BAR_W = PANEL.w;
+  const TOP_BAR_H = PAD;
 
-  rightPanel.pageBar.setGeometry(BAR_X, BAR_Y, BAR_W, BAR_H);
-  rightPanel.pageContent.setGeometry(PANEL.x, BAR_H, PANEL.w, PANEL.h - BAR_HEIGHT);
+  const SIDE_BAR_W = PAD;
+  const SIDE_BAR_Y = PANEL.y;
+  const SIDE_BAR_X = PANEL.x - SIDE_BAR_W;
+  const SIDE_BAR_H = PANEL.h;
+    
+ 
+  rightPanel.booksBar.setGeometry(SIDE_BAR_X, SIDE_BAR_Y, 
+                                 SIDE_BAR_W, SIDE_BAR_H);
+  
+  rightPanel.pagesBar.setGeometry(TOP_BAR_X, TOP_BAR_Y, 
+                                TOP_BAR_W, TOP_BAR_H);
+  
+  rightPanel.pageContent.setGeometry(PANEL.x, TOP_BAR_H, PANEL.w, 
+                                    PANEL.h - TOP_BAR_H);
+                                 
 
-  rightPanel.pageBar.update();
+  rightPanel.booksBar.update();
+  rightPanel.pagesBar.update();
   rightPanel.pageContent.update();
 
 }
 
 export function renderRightPanel(g) {
-  rightPanel.pageBar.render(g);
+  rightPanel.booksBar.render(g);
+  rightPanel.pagesBar.render(g);
   rightPanel.pageContent.render(g);
 }
 
