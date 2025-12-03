@@ -37,7 +37,6 @@ export class Palette {
     }
 
     const target = maxMultiple * TILE_SIZE;
-    console.log(R.ui.libraryPages, target);
 
      // final scale
     if(this.atlas.height < this.atlas.width)
@@ -56,9 +55,7 @@ export class Palette {
     const cy = Math.floor(relY / TILE_SIZE);
 
 
-    R.ui.hoveredAsset = {id: cy * TILE_COLS + cx + 1, atlasRef: R.ui.libraryPages};
-    console.log(R.ui.libraryPages);
-
+    R.ui.hoveredAsset = {id: cy * TILE_COLS + cx + 1, atlasRef: R.ui.selectedPage};
 
   }
 
@@ -118,7 +115,6 @@ export class Palette {
     const drawH = this.atlas.height * this.scale;
 
     this.checkAtlas();
-    console.log(R.ui.libraryPages, this.scale, "|", drawW, drawH);
     g.image(this.atlas, this.x, this.y, drawW, drawH);
 
     this.drawCursor(g);

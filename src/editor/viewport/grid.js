@@ -37,7 +37,7 @@ export class Grid {
     const lvl = R.layout.level;
     const m   = R.input.mouse;
     
-    this.checktileAtlas();
+    this.checktileAtlas(R.ui.selectedPage);
 
     if (!lvl) return;
 
@@ -160,7 +160,7 @@ export class Grid {
   }
 
   getCurrentAtlas() {
-    switch(R.ui.libraryPages){
+    switch(R.ui.selectedPage){
       case "WORLD_TILESET": return R.atlas.world_tileset;
       case "COIN": return R.atlas.coin;
       case "FRUITS": return R.atlas.fruits;
