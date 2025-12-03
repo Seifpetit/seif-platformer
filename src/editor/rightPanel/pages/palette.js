@@ -141,7 +141,7 @@ export class Palette {
       
     }
     const selectId = R.ui.selectedAsset.id;
-    if (selectId && (R.ui.selectedAsset.atlasRef === this.atlas)) { // highlight after selection
+    if (selectId && (R.ui.selectedAsset.atlasRef === R.ui.selectedPage)) { // highlight after selection
         const hex2 = "#ffff00";
         const z = selectId - 1;
         const col = z % TILE_COLS;
