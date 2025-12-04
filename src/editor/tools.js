@@ -27,6 +27,7 @@ export function applyToolAt(gx, gy) {
 
   if (BRUSH === "PAINT" && !(tool === "erase")) { paint(lvl, gx, gy); }
   if (BRUSH === "ERASE") { erase(lvl, gx, gy); }
+  if (BRUSH === "SELECT") { select(lvl, gx, gy); }
 
 
 }
@@ -38,4 +39,20 @@ export function paint(lvl, gx, gy) {
 
 export function erase(lvl, gx, gy) {
   lvl.layers.ground[gy * lvl.width + gx] = 0;
+}
+
+export function select(lvl, gx, gy) {
+  R.ui.selection.active = true;
+  R.ui.selection.startGX = gx;
+  R.ui.selection.startGY = gy;
+  R.ui.selection.endGX = gx;
+  R.ui.selection.endGY = gy;
+
+  if(R.ui.selection.active) {
+    R.ui.selection.endGX = gx;
+    R.ui.selection.endGY = gy;
+  }
+
+  
+
 }

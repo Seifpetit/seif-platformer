@@ -4,7 +4,7 @@
 // - Owns camera, toggles, and level switching
 // - Renders tile layers in order, then entities/effects, then debug overlays
 // ─────────────────────────────────────────────────────────────────────────────
-import { R, updatePanelLayout } from './core/runtime.js';
+import { R, updatePanelLayout, initRuntime} from './core/runtime.js';
 import { loadLevel } from './core/levelLoader.js';
 import { updateFrame, renderFrame } from './core/orchestrator.js';
 import { registerKeyboard } from './core/input.js';
@@ -35,7 +35,6 @@ new window.p5(p => {
   p.setup = async () => {
     p.createCanvas(window.innerWidth - R.layout.pad, window.innerHeight - R.layout.pad); // "- R.layout.padX" //TEMP
     p.noSmooth(); p.pixelDensity(1); p.canvas.style.cursor = 'none';
-    
 
     // offscreen layers
     gWorld   = p.createGraphics(p.width, p.height);
@@ -75,6 +74,37 @@ new window.p5(p => {
       if (insideGrid) e.preventDefault();
     
     });
+
+  let dragTimer = null;
+
+  window.addEventListener("dragover", e => {
+    e.preventDefault();
+
+    R.ui.dragActive = true;
+
+    // reset timer
+    clearTimeout(dragTimer);
+    dragTimer = setTimeout(() => {
+        R.ui.dragActive = false;
+    }, 100); // 100ms without dragover = drag ended
+    });
+
+    window.addEventListener("drop", e => {
+        e.preventDefault();
+
+        clearTimeout(dragTimer);
+        R.ui.dragActive = false;
+
+        const files = e.dataTransfer.files;
+        for (let f of files) {
+            if (f.type.startsWith("audio/")) {
+                importAudioFile(f);
+            }
+        }
+    });
+
+
+
 
 
 

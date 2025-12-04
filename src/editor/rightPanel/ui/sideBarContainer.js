@@ -1,6 +1,6 @@
-import { R } from "../../core/runtime.js";
-import { BOOKS } from "./pages.js";
-import { onBookSelected } from "./index.js";
+import { R } from "../../../core/runtime.js";
+import { BOOKS } from "../ui/pages.js";
+import { onBookSelected } from "../index.js";
 
 export class sideBarContainer {
 
@@ -55,6 +55,7 @@ class Button {
       R.ui.hoveredBook = this.ref;
       if (m.pressed && m.button === "left") {
         onBookSelected(this.ref);
+        R.rightPanel.book = this.ref;
       }
     }
   }
@@ -69,7 +70,7 @@ class Button {
     if (isActive) {
       g.fill("orange");
     } else if (isHover) {
-      g.fill("#d59c3fbb");
+      g.fill("#43321873");
     } else {
       g.fill("#262626");
     }

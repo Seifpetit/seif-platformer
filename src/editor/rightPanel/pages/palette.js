@@ -1,14 +1,16 @@
-
 import { R } from "../../../core/runtime.js";
 import { TILE_SIZE, TILE_COLS } from "../../../core/tileset.js";
 
-
 export class Palette {
-  constructor() {
-    this.x,this.y,this.w,this.h;
+  constructor(def) {
+    this.def = def; // store metadata
+    this.x = 0;
+    this.y = 0;
+    this.w = 0;
+    this.h = 0;
 
-    this.atlas;
-    this.scale;
+    this.atlas = null;
+    this.scale = 1;
   }
 
   setGeometry(x, y, w, h) {
@@ -16,69 +18,53 @@ export class Palette {
     this.y = y;
     this.w = w;
     this.h = h;
-    this.scale = this.computePaletteScale();
-    
-    
+
+    // if atlas exists, recompute scale
+    if (this.atlas)
+      this.scale = this.computePaletteScale();
   }
 
   computePaletteScale() {
+    if (!this.atlas) return 1;
 
-    if(!this.atlas) return;
-    
-    // max possible integer multiple of TILE_SIZE that fits panel
     let maxMultiple;
 
-    if(this.atlas.height < this.atlas.width) {
+    if (this.atlas.height < this.atlas.width) {
       maxMultiple = Math.floor(this.w / TILE_SIZE);
-    }
-    else {
+    } else {
       maxMultiple = Math.floor(this.h / TILE_SIZE);
-
     }
 
     const target = maxMultiple * TILE_SIZE;
 
-     // final scale
-    if(this.atlas.height < this.atlas.width)
-      return target / this.atlas.width;
-    else
-      return target / this.atlas.height;
-    
+    return (this.atlas.height < this.atlas.width)
+      ? target / this.atlas.width
+      : target / this.atlas.height;
   }
 
   getHoveredAsset(mx, my) {
-
     const relX = (mx - this.x) / this.scale;
     const relY = (my - this.y) / this.scale;
 
     const cx = Math.floor(relX / TILE_SIZE);
     const cy = Math.floor(relY / TILE_SIZE);
 
-
-    R.ui.hoveredAsset = {id: cy * TILE_COLS + cx + 1, atlasRef: R.ui.selectedPage};
-
+    R.ui.hoveredAsset = {
+      id: cy * TILE_COLS + cx + 1,
+      atlasRef: R.ui.selectedPage
+    };
   }
 
-  checkAtlas() {
-    switch(R.ui.libraryPages){
-      case "WORLD_TILESET": this.atlas = R.atlas.world_tileset; break;
-      case "COIN": this.atlas = R.atlas.coin; break;
-      case "FRUITS": this.atlas = R.atlas.fruits; break;
-      case "PLATFORMS": this.atlas = R.atlas.platforms; break;
-    }
+  update(atlas) {
+    this.atlas = atlas;
 
-  }
-
-// --------------------------------------------
-// UPDATE — handle selection
-// --------------------------------------------
-  update(a) {
-    this.atlas = a;
-    
     const m = R.input.mouse;
     if (!this.atlas) return;
-    
-    const drawW = this.atlas.width  * this.scale;
+
+    // recalc scale because atlas changed
+    this.scale = this.computePaletteScale();
+
+    const drawW = this.atlas.width * this.scale;
     const drawH = this.atlas.height * this.scale;
 
     this.getHoveredAsset(m.x, m.y);
@@ -86,35 +72,26 @@ export class Palette {
     const inside =
       m.x >= this.x && m.x < this.x + drawW &&
       m.y >= this.y && m.y < this.y + drawH;
+
     R.cursor.inPalette = inside;
-    // --------------------------------------------
-    // INPUT CHECK (to-refactor-in-future)
-    // --------------------------------------------
 
-    if (inside && m.pressed && m.button === 'left') {
-      
+    if (inside && m.pressed && m.button === "left") {
       R.ui.selectedAsset = R.ui.hoveredAsset;
-
     }
   }
 
-// --------------------------------------------
-// RENDER — draw sheet + highlight
-// --------------------------------------------
   render(g) {
-    
     if (!this.atlas) return;
 
     g.push();
-    
+
     g.noStroke();
-    g.fill(0,0,0,150);
+    g.fill(0, 0, 0, 150);
     g.rect(this.x, this.y, this.w, this.h);
 
-    const drawW = this.atlas.width  * this.scale;
+    const drawW = this.atlas.width * this.scale;
     const drawH = this.atlas.height * this.scale;
 
-    this.checkAtlas();
     g.image(this.atlas, this.x, this.y, drawW, drawH);
 
     this.drawCursor(g);
@@ -123,41 +100,39 @@ export class Palette {
   }
 
   drawCursor(g) {
-
-    if (R.cursor.inPalette) {
+    // Hover highlight
+    if (R.cursor.inPalette && R.ui.hoveredAsset) {
       const z = R.ui.hoveredAsset.id - 1;
       const col = z % TILE_COLS;
       const row = Math.floor(z / TILE_COLS);
+
       const hx = this.x + col * TILE_SIZE * this.scale;
       const hy = this.y + row * TILE_SIZE * this.scale;
-      const hex1 = "#00ffff";
+
       g.push();
-          g.noFill();
-          g.stroke(hex1); g.strokeWeight(2);
-          g.rect(hx, hy, TILE_SIZE * this.scale, TILE_SIZE * this.scale);
-          g.pop();
-
-    
-      
-    }
-    const selectId = R.ui.selectedAsset.id;
-    if (selectId && (R.ui.selectedAsset.atlasRef === R.ui.selectedPage)) { // highlight after selection
-        const hex2 = "#ffff00";
-        const z = selectId - 1;
-        const col = z % TILE_COLS;
-        const row = Math.floor(z / TILE_COLS);
-        const hx = this.x + col * TILE_SIZE * this.scale;
-        const hy = this.y + row * TILE_SIZE * this.scale;
-        g.push();
-          g.noFill();
-          g.stroke(hex2); g.strokeWeight(2);
-          g.rect(hx, hy, TILE_SIZE * this.scale, TILE_SIZE * this.scale);
-          g.pop();
+      g.noFill();
+      g.stroke("#00ffff");
+      g.strokeWeight(2);
+      g.rect(hx, hy, TILE_SIZE * this.scale, TILE_SIZE * this.scale);
+      g.pop();
     }
 
+    // Selection highlight
+    const selected = R.ui.selectedAsset;
+    if (selected && selected.atlasRef === R.ui.selectedPage) {
+      const z = selected.id - 1;
+      const col = z % TILE_COLS;
+      const row = Math.floor(z / TILE_COLS);
 
+      const hx = this.x + col * TILE_SIZE * this.scale;
+      const hy = this.y + row * TILE_SIZE * this.scale;
+
+      g.push();
+      g.noFill();
+      g.stroke("#ffff00");
+      g.strokeWeight(2);
+      g.rect(hx, hy, TILE_SIZE * this.scale, TILE_SIZE * this.scale);
+      g.pop();
+    }
   }
-  
 }
-
-

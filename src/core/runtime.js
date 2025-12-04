@@ -9,6 +9,9 @@ import { Camera } from "../core/camera.js";
 // ----- Runtime state -----
 export const R = {
 
+
+  audioCtx: new AudioContext(),
+
   RESET_FRAMES: 0,
   mode: "builder",                  // "game" | "builder"
   camera: Camera, // camera position and boubds
@@ -39,6 +42,18 @@ export const R = {
     
   },
 
+  rightPanel: {
+    book: null,
+    page: null,
+
+    registry: {
+      //EXAMPLE :
+      // TILES: { WORLD_TILESET: instance....}
+      // AUDIO: { Assets: instance, PATTERN: instance, SEQUENCER: instance }
+    }
+  },
+
+
   cursor: { x: 0, y: 0, tileX: 0, tileY: 0, inGrid: false, inPalette: false, inHud: false
   },
 
@@ -56,6 +71,16 @@ export const R = {
     selectedAsset: {},              // currently selected tile id
     hoveredAsset: {},              // tile id under mouse in palette
 
+    selection: {
+      startGX: null,
+      startGY: null,
+      endGX: null,
+      endGY: null,
+      active: false
+    },
+
+
+
     panels: {
       viewport: null,
       right: null,
@@ -72,6 +97,10 @@ export const R = {
     state: {
       timelineOpen: false,
       libraryOpen: false,
+    },
+
+    audio: {
+      selectedAssetId: null,
     }
 
   },
@@ -104,6 +133,14 @@ export const R = {
     { name: "entities",   kind: "entities", parallax: 1.0, order: 50 },
     { name: "hud",        kind: "hud",      parallax: 0.0, order: 90 },
   ],
+
+  data: {
+    audio: {
+      assets: [],
+    }
+  },
+
+
 
 };
 
@@ -164,6 +201,7 @@ export function initRuntime(p) {
     R.hud.link.style("border-radius", "6px");
     R.hud.link.hide(); // shown only in layout mode
   }
+  R.audioCtx = new AudioContext();
 }
 
 // Optional cleanup if you ever recreate sketches
