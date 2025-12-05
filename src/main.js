@@ -9,7 +9,7 @@ import { loadLevel } from './core/levelLoader.js';
 import { updateFrame, renderFrame } from './core/orchestrator.js';
 import { registerKeyboard } from './core/input.js';
 import { TILE_SIZE } from './core/tileset.js';
-
+import { importAudioFile } from './core/importAudio.js';
 // ─────────────────────────────────────────────────────────────────────────────
 // [LIFECYCLE] preload/setup
 // preload → load images/assets
@@ -30,6 +30,7 @@ new window.p5(p => {
 
     R.layout.assets.cursor_k = p.loadImage("src/assets/pointer_k.png");
     R.layout.assets.cursor_j = p.loadImage("src/assets/pointer_j.png");
+    R.layout.assets.cursor_b = p.loadImage("src/assets/pointer_b.png");
   };
 
   p.setup = async () => {
@@ -61,7 +62,7 @@ new window.p5(p => {
     updatePanelLayout(p);
 
     window.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'o')) {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'o')) {
         e.preventDefault();
       }
     });
@@ -75,18 +76,19 @@ new window.p5(p => {
     
     });
 
-  let dragTimer = null;
+    let dragTimer = null;
 
-  window.addEventListener("dragover", e => {
-    e.preventDefault();
+    window.addEventListener("dragover", e => {
+      e.preventDefault();
 
-    R.ui.dragActive = true;
+      R.ui.dragActive = true;
 
-    // reset timer
-    clearTimeout(dragTimer);
-    dragTimer = setTimeout(() => {
-        R.ui.dragActive = false;
-    }, 100); // 100ms without dragover = drag ended
+      // reset timer
+      clearTimeout(dragTimer);
+      dragTimer = setTimeout(() => {
+          R.ui.dragActive = false;
+      }, 100); // 100ms without dragover = drag ended
+
     });
 
     window.addEventListener("drop", e => {
@@ -102,12 +104,7 @@ new window.p5(p => {
             }
         }
     });
-
-
-
-
-
-
+  
   };
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -126,7 +123,7 @@ new window.p5(p => {
     p.image(gHUD, 0, 0);
     
 
-    if (R.layout.assets.cursor_j && !R.cursor.inPalette) {
+    if (R.layout.assets.cursor_j && !R.cursor.inPalette && !R.cursor.inAudio && !R.cursor.inBottomDock) {
 
       p.image(R.layout.assets.cursor_j, R.cursor.x, R.cursor.y, TILE_SIZE, TILE_SIZE);
       if (!R.cursor.inGrid) {
@@ -136,8 +133,14 @@ new window.p5(p => {
         p.rect(R.cursor.x, R.cursor.y, TILE_SIZE, TILE_SIZE);
         p.pop();
       }
-        
-      }
+    }
+
+    if(R.layout.assets.cursor_b && (R.cursor.inAudio ||R.cursor.inBottomDock)) {
+      p.image(R.layout.assets.cursor_b, R.cursor.x, R.cursor.y, 20, 20);
+   
+    }
+
+
 
   };
 

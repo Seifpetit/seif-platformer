@@ -37,7 +37,7 @@ export class topBarContainer {
   render(g) {
     g.push();
     g.fill(30);
-    g.rect(this.x, this.y, this.w, this.h);
+    g.rect(this.x, this.y, this.w, this.h, 10, 10, 0, 0);
 
     this.buttons.forEach(btn => btn.render(g));
     g.pop();
@@ -70,7 +70,7 @@ class Button {
     g.push();
 
     g.fill(isActive ? "#ffaa00" : "#444");
-    g.rect(this.x, this.y, this.w, this.h);
+    g.rect(this.x, this.y, this.w, this.h, 10, 10, 0, 0);
 
     g.fill(isActive ? "black" : "orange");
     g.textAlign(g.CENTER, g.CENTER);

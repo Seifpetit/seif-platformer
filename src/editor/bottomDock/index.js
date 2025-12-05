@@ -35,6 +35,16 @@ export function updateBottomDock() {
 
   dock.bar.update();
   dock.panel.update();
+
+  const m = R.input.mouse;
+  const insidePanel =
+      m.x >= P.x &&
+      m.x <= P.x + P.w &&
+      m.y >= P.y &&
+      m.y <= P.y + P.h;
+
+  R.cursor.inBottomDock = insidePanel;
+
   
 }
 

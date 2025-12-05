@@ -87,7 +87,7 @@ export class Palette {
 
     g.noStroke();
     g.fill(0, 0, 0, 150);
-    g.rect(this.x, this.y, this.w, this.h);
+    g.rect(this.x, this.y, this.w, this.h, 10, 10, 10, 10);
 
     const drawW = this.atlas.width * this.scale;
     const drawH = this.atlas.height * this.scale;

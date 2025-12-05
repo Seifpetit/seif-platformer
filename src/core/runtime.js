@@ -54,7 +54,8 @@ export const R = {
   },
 
 
-  cursor: { x: 0, y: 0, tileX: 0, tileY: 0, inGrid: false, inPalette: false, inHud: false
+  cursor: { x: 0, y: 0, tileX: 0, tileY: 0, inGrid: false, 
+            inPalette: false, inAudio: false, inBottomDock: false,
   },
 
   ui: {

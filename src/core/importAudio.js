@@ -1,4 +1,4 @@
-import { R } from "./runtime";
+import { R } from "./runtime.js";
 
 export async function importAudioFile(file) {
 

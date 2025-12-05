@@ -44,7 +44,7 @@ export class ContentContainer {
   render(g) {
     g.push();
     g.fill(25);
-    g.rect(this.x, this.y, this.w, this.h);
+    g.rect(this.x, this.y, this.w, this.h, 10, 10, 10, 10);
 
     const book = R.ui.selectedBook;
     const page = R.ui.selectedPage;

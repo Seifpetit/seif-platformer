@@ -34,12 +34,16 @@ export class AudioAssetsPage {
       m.y >= this.y &&
       m.y <= this.y + this.h;
 
+    R.cursor.inAudio = insidePanel;
+
     this.isDragOver = dragging && insidePanel;
 
 
     assets.forEach((asset, i) => {
-      
-      const rowY = this.y + i * this.rowHeight;
+      //-----------------------||----------------
+      //-----------------------|| this is for the first header row
+      //-----------------------\/----------------
+      const rowY = this.y + this.rowHeight + i * this.rowHeight;
       const inside = 
             m.x >= this.x &&
             m.x <= this.x + this.w &&
@@ -58,30 +62,28 @@ export class AudioAssetsPage {
 
   }
 
-  render(g) {
+  renderHeader(g) {
     if(!g) return;
 
-    g.push(); g.fill(20);
-    g.rect(this.x, this.y, this.w, this.h);
-
-    const assets = R.data.audio.assets || [];
-
-    //------HEADER------
+    g.push();
     g.fill(40);
     g.rect(this.x, this.y, this.w, this.rowHeight);
     g.fill(200);
     g.textAlign(g.LEFT, g.CENTER); g.textSize(13);
     g.text("Assets (List View)", this.x + 0, this.y + this.rowHeight / 2);
 
+  }
+
+  renderFileRows(g) {
+    if(!g) return;
 
 
-    //------ROWS--------
-
+    const assets = R.data.audio.assets || [];
     const startY = this.y + this.rowHeight;
 
     assets.forEach((asset, i) => {
       const rowY = startY + i * this.rowHeight;
-
+      if (rowY >= this.y + this.h) return;
       const hovered = this.hoveredId === asset.id;
       const selected = this.selectedId === asset.id;
 
@@ -107,8 +109,28 @@ export class AudioAssetsPage {
     });
 
         // Dragging highlight
-    if (this.isDragOver) {
-        g.push();
+    if (this.isDragOver) this.dragHighlight(g);
+
+    g.pop();
+  }
+
+  render(g) {
+    if(!g) return;
+
+    g.push(); g.fill(20);
+    g.rect(this.x, this.y, this.w, this.h, 10, 10, 10, 10);
+
+    //------HEADER------
+    this.renderHeader(g);
+
+    //------ROWS--------
+
+    this.renderFileRows(g);
+    
+  }
+
+  dragHighlight(g) {
+    g.push();
 
         // semi-transparent overlay
         g.fill(255, 255, 0, 30);
@@ -128,13 +150,9 @@ export class AudioAssetsPage {
         g.text("Drop audio files to import", this.x + this.w / 2, this.y + this.h / 2);
 
         g.pop();
-    }
-
-
-
-
-
-    g.pop();
   }
 
+
 }
+
+
