@@ -9,15 +9,25 @@ export function updateInput(p) {
 
   //------{mouse}--------------------------------------
 
-  const prevX = R.input.mouseX;
-  const prevY = R.input.mouseY;
+  const prevX = R.input.mouse.x;
+  const prevY = R.input.mouse.y;
 
   R.input.mouse.x = p.mouseX;
   R.input.mouse.y = p.mouseY;
-  R.input.mouse.dx = R.input.mouseX - prevX;
-  R.input.mouse.dy = R.input.mouseY - prevY;
+  R.input.mouse.dx = R.input.mouse.x - prevX;
+  R.input.mouse.dy = R.input.mouse.y - prevY;
   R.input.mouse.pressed = p.mouseIsPressed;
   R.input.mouse.button = p.mouseButton;
+
+  R.cursor.x = R.input.mouse.x;
+  R.cursor.y = R.input.mouse.y;
+
+  const vp = R.layout.panels.viewport;
+  if(R.cursor.inGrid) {
+    R.cursor.tileX = Math.floor((R.cursor.x - vp.x) / R.layout.tileSize);
+    R.cursor.tileY = Math.floor((R.cursor.y - vp.y) / R.layout.tileSize);
+  }
+
 
   //------{touch}--------------------------------------
 

@@ -34,7 +34,7 @@ export function applyToolAt(gx, gy) {
 
 export function paint(lvl, gx, gy) {
   lvl.layers.ground[gy * lvl.width + gx] =  R.ui.selectedAsset;
-  console.log(lvl.layers.ground[gy * lvl.width + gx]);
+  //console.log(lvl.layers.ground[gy * lvl.width + gx]);
 }
 
 export function erase(lvl, gx, gy) {

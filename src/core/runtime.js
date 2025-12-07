@@ -30,9 +30,11 @@ export const R = {
   },
 
   layout: {
+    tileSize: TILE_SIZE,
+    width: 0,
+    height: 0,
     pad: 32,     // optional HUD/canvas padding if needed it later
     level: null,  // layout’s working level gets assigned in main.js setup()
-    mode: "tile",            // 'tile' | 'collision'
     panels: {
       viewport: { x: 0, y: 0, w: null, h: null , rows: 24, cols: 44 }, 
       rightPanel: { x: null, y: 0, w: null, h: null }, // palette area (right side)
@@ -56,9 +58,13 @@ export const R = {
 
   cursor: { x: 0, y: 0, tileX: 0, tileY: 0, inGrid: false, 
             inPalette: false, inAudio: false, inBottomDock: false,
+            currentPng: null,
   },
 
   ui: {
+
+    modalLock: false,
+
     timelineMode: null,
     brushMode: null,
     
@@ -135,11 +141,13 @@ export const R = {
     { name: "hud",        kind: "hud",      parallax: 0.0, order: 90 },
   ],
 
-  data: {
-    audio: {
-      assets: [],
-    }
+  assets: {
+    audio: [],      // <-- required for importAudio
+    video: [],      // <-- required for importVideo
+    image: []      // <-- required for importImage
   },
+
+  
 
 
 
@@ -148,6 +156,9 @@ export const R = {
 // ----- Render pipeline -----
 
 export function updatePanelLayout(p) {
+
+  R.layout.width = p.width;
+  R.layout.height = p.height;
   //step 1 fix dimensions
   //step2 store/update values
   //step3 create Rect as stroke fro the panels

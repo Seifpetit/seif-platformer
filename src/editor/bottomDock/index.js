@@ -19,6 +19,8 @@ const dock = {
 // ─────────────────────────────────────────────
 export function updateBottomDock() {
 
+    if (R.ui.modalLock) return;  // freeze editor input when popup active
+
   const P = R.layout.panels.bottomDock;
 
   const BAR_HEIGHT = 40;

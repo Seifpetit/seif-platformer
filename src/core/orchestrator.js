@@ -6,8 +6,13 @@ import { updateGame, renderGame } from '../modes/game.js';
 import { updatePhysicsAll } from './physics.js';
 
 export function updateFrame(p) {
-  
+
   updateInput(p);
+  if(R.ui.modalLock) {
+    R.cursor.currentPng = R.layout.assets.mark_exlamation_cursor_b;
+    return;
+  }
+  R.cursor.currentPng = R.layout.assets.cursor_b;
   updatePhysicsAll();
   
   switch (R.mode) {

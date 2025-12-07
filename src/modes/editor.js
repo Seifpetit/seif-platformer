@@ -14,7 +14,6 @@ import { updateViewport, renderViewport } from '../editor/viewport/index.js';
 export function updateBuilder(p) {
 
   handleBuilderShortcuts(p);
-  
   updateViewport(p);
   updateRightPanel(p);
   updateBottomDock();
@@ -22,15 +21,15 @@ export function updateBuilder(p) {
 }
 
 export function renderBuilder(p, { gWorld, gOverlay, gHUD }) {
-  
   gWorld.clear();
-  
   gOverlay.clear();
   gHUD.clear();
-
+  
   renderViewport(gWorld);
   renderRightPanel(gOverlay);
   renderBottomDock(p);
+
+  
 }
 
 export function handleBuilderShortcuts(p) {

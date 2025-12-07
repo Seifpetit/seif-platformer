@@ -65,6 +65,8 @@ export function onBookSelected(bookRef) {
 // -----------------------------------------------
 export function updateRightPanel() {
 
+  if (R.ui.modalLock) return;  // freeze editor input when popup active
+
   const PANEL = R.layout.panels.rightPanel;
   const PAD = R.layout.pad;
 

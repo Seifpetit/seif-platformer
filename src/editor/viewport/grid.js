@@ -24,8 +24,8 @@ export class Grid {
 
     if (!lvl) return;
 
-    const gx = Math.floor((m.x - this.x) / TILE_SIZE);
-    const gy = Math.floor((m.y - this.y) / TILE_SIZE);
+    const gx = Math.floor((m.x - this.x) / R.layout.tileSize);
+    const gy = Math.floor((m.y - this.y) / R.layout.tileSize);
 
     const inside =
       gx >= 0 &&
@@ -39,23 +39,7 @@ export class Grid {
 
     R.cursor.inGrid = inside;
 
-    if (!inside) {
-      R.cursor.tileX = gx;
-      R.cursor.tileY = gy;
-      R.cursor.x = this.x + gx * TILE_SIZE;
-      R.cursor.y = this.y + gy * TILE_SIZE;
-      return;
-    } else {
-      R.cursor.x = m.x;
-      R.cursor.y = m.y;
-    }
-
-    R.cursor.tileX = gx;
-    R.cursor.tileY = gy;
-    R.cursor.x = this.x + gx * TILE_SIZE;
-    R.cursor.y = this.y + gy * TILE_SIZE;
-
-    if (m.pressed) applyToolAt(gx, gy);
+    if (m.pressed && inside) applyToolAt(gx, gy);
   }
 
   render(g) {
@@ -131,14 +115,17 @@ export class Grid {
     const cursor = R.cursor;
     const assets = R.layout.assets;
 
-    if (!cursor.inGrid) return;
+    if (!cursor.inGrid || R.ui.modalLock) return;
     
     const id = R.ui.selectedAsset?.id;
+    const cx = cursor.tileX * R.layout.tileSize;
+    const cy = cursor.tileY * R.layout.tileSize;
     if( cursor.inGrid && !id){
       g.push();
       g.fill("#3bd2c3a8");
       g.stroke(0, 255, 255, 180); g.strokeWeight(2);
-      g.rect(cursor.x, cursor.y, TILE_SIZE, TILE_SIZE);
+      
+      g.rect(cx, cy, R.layout.tileSize, R.layout.tileSize);
       g.pop();
     }
     if (!id) return;
@@ -155,23 +142,18 @@ export class Grid {
       const sx = (z % TILE_COLS) * TILE_SIZE;
       const sy = Math.floor(z / TILE_COLS) * TILE_SIZE;
       g.image(
-        atlas, cursor.x, cursor.y, TILE_SIZE, TILE_SIZE,
+        atlas, cx, cy, TILE_SIZE, TILE_SIZE,
         sx, sy, TILE_SIZE, TILE_SIZE
       );
       g.push();
       g.noFill();
-      g.stroke(0, 255, 255, 180); g.strokeWeight(2);
-      g.rect(cursor.x, cursor.y, TILE_SIZE, TILE_SIZE);
+      g.stroke(0, 255, 255, 180);
+      g.strokeWeight(2);
+      g.rect(cx, cy, TILE_SIZE, TILE_SIZE);
       g.pop();
-      
     }
 
-    g.push();
-    g.noFill();
-    g.stroke(0, 255, 255, 180);
-    g.strokeWeight(2);
-    g.rect(cursor.x, cursor.y, TILE_SIZE, TILE_SIZE);
-    g.pop();
+    
   }
 }
 

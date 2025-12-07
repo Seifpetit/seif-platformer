@@ -4,12 +4,12 @@
 // - Owns camera, toggles, and level switching
 // - Renders tile layers in order, then entities/effects, then debug overlays
 // ─────────────────────────────────────────────────────────────────────────────
-import { R, updatePanelLayout, initRuntime} from './core/runtime.js';
+import { R, updatePanelLayout} from './core/runtime.js';
 import { loadLevel } from './core/levelLoader.js';
 import { updateFrame, renderFrame } from './core/orchestrator.js';
 import { registerKeyboard } from './core/input.js';
-import { TILE_SIZE } from './core/tileset.js';
-import { importAudioFile } from './core/importAudio.js';
+import { handleImportedFiles } from "./core/importRouter.js";
+import { ToasterUI } from './ui/Toaster.js';
 // ─────────────────────────────────────────────────────────────────────────────
 // [LIFECYCLE] preload/setup
 // preload → load images/assets
@@ -31,6 +31,7 @@ new window.p5(p => {
     R.layout.assets.cursor_k = p.loadImage("src/assets/pointer_k.png");
     R.layout.assets.cursor_j = p.loadImage("src/assets/pointer_j.png");
     R.layout.assets.cursor_b = p.loadImage("src/assets/pointer_b.png");
+    R.layout.assets.mark_exlamation_cursor_b = p.loadImage("src/assets/mark_exclamation_pointer_b.png");
   };
 
   p.setup = async () => {
@@ -38,13 +39,13 @@ new window.p5(p => {
     p.noSmooth(); p.pixelDensity(1); p.canvas.style.cursor = 'none';
 
     // offscreen layers
-    gWorld   = p.createGraphics(p.width, p.height);
-    
+    gWorld   = p.createGraphics(p.width, p.height); 
     gOverlay = p.createGraphics(p.width, p.height);
     gHUD     = p.createGraphics(p.width, p.height);
 
     // Game: initial level
     R.level = await loadLevel('./levels/level2.json');
+    R.cursor.currentPng = R.layout.assets.cursor_b;
 
     // layout: blank map
     const W = 44, H = 24;  //W for nb of grid's columns , H for nb of rows 
@@ -76,34 +77,7 @@ new window.p5(p => {
     
     });
 
-    let dragTimer = null;
-
-    window.addEventListener("dragover", e => {
-      e.preventDefault();
-
-      R.ui.dragActive = true;
-
-      // reset timer
-      clearTimeout(dragTimer);
-      dragTimer = setTimeout(() => {
-          R.ui.dragActive = false;
-      }, 100); // 100ms without dragover = drag ended
-
-    });
-
-    window.addEventListener("drop", e => {
-        e.preventDefault();
-
-        clearTimeout(dragTimer);
-        R.ui.dragActive = false;
-
-        const files = e.dataTransfer.files;
-        for (let f of files) {
-            if (f.type.startsWith("audio/")) {
-                importAudioFile(f);
-            }
-        }
-    });
+    setupDragAndDrop();
   
   };
 
@@ -114,38 +88,32 @@ new window.p5(p => {
   p.draw = () => {
     p.clear(); // <── first
 
+    // stop viewport updates if modal is open
     updateFrame(p);
-    renderFrame(p, { gWorld, gOverlay, gHUD });
-    
+    ToasterUI.update(1/60);
 
+    renderFrame(p, { gWorld, gOverlay, gHUD });
+    ToasterUI.render(gOverlay);
+    //if(R.ui.dragActive) ToasterUI.showImportIntent();
+
+    
     p.image(gWorld, 0, 0);
     p.image(gOverlay, 0, 0);
     p.image(gHUD, 0, 0);
-    
-
-    if (R.layout.assets.cursor_j && !R.cursor.inPalette && !R.cursor.inAudio && !R.cursor.inBottomDock) {
-
-      p.image(R.layout.assets.cursor_j, R.cursor.x, R.cursor.y, TILE_SIZE, TILE_SIZE);
-      if (!R.cursor.inGrid) {
-        p.push();
-        p.noFill();
-        p.stroke(255, 255, 0, 180); p.strokeWeight(2);
-        p.rect(R.cursor.x, R.cursor.y, TILE_SIZE, TILE_SIZE);
-        p.pop();
-      }
-    }
-
-    if(R.layout.assets.cursor_b && (R.cursor.inAudio ||R.cursor.inBottomDock)) {
-      p.image(R.layout.assets.cursor_b, R.cursor.x, R.cursor.y, 20, 20);
    
+    if (R.cursor.currentPng) { 
+        p.image(R.cursor.currentPng, R.cursor.x, R.cursor.y);
     }
-
-
 
   };
 
   // prevent context menu (so right-click erases)
   p.canvas?.addEventListener?.('contextmenu', e => e.preventDefault());
+
+  p.mousePressed = () => {
+    ToasterUI.onClick(R.input.mouse.x, R.input.mouse.y);
+  };
+
 
   p.windowResized = () => {
     p.resizeCanvas(window.innerWidth, window.innerHeight);
@@ -154,3 +122,29 @@ new window.p5(p => {
   };
   
 });
+
+
+function setupDragAndDrop() {
+  const cnv = document.getElementById("defaultCanvas0");
+
+  cnv.ondragover = e => {
+    e.preventDefault();
+    R.ui.dragActive = true;
+    ToasterUI.showHint();
+  };
+
+  cnv.ondragleave = e => {
+    R.ui.dragActive = false;
+    ToasterUI.clearHint();
+  };
+
+  cnv.ondrop = e => {
+    e.preventDefault();
+    R.ui.dragActive = false;
+    ToasterUI.clearHint();
+    
+    const files = e.dataTransfer.files;
+    handleImportedFiles(files);
+  };
+
+}

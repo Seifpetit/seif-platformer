@@ -1,6 +1,6 @@
 import { R } from "./runtime.js";
 
-export async function importAudioFile(file) {
+export async function importAudio(file) {
 
   const arrayBuffer = await file.arrayBuffer();
 
@@ -8,7 +8,7 @@ export async function importAudioFile(file) {
 
   const id = crypto.randomUUID();
 
-  R.data.audio.assets.push({
+  R.assets.audio.push({
     id,
     name: file.name,
     buffer,

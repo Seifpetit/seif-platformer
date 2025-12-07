@@ -1,10 +1,12 @@
-import { Palette } from "../pages/palette.js";
-import { AudioAssetsPage } from "../pages/audioAssetsPage.js";
+import { PalettePage } from "../books/palettePage/index.js";
+import { AudioAssetsPage } from "../books/audioAssetsPage/index.js";
+import { VideoAssetsPage } from "../books/video/videoAssetsPage/index.js";
 // import more later: AudioPatternPage, LogicPage, etc
 
 export const PAGE_TYPES = {
-  PALETTE:      Palette,
+  PALETTE:      PalettePage,
   AUDIO_ASSETS: AudioAssetsPage,
+  VIDEO_ASSETS: VideoAssetsPage,
   // AUDIO_PATTERN: AudioPatternPage,
   // LOGIC_TRIGGERS: LogicTriggersPage,
   // …
@@ -13,7 +15,7 @@ export const PAGE_TYPES = {
 export const BOOKS = [
   { label: "Tiles",    ref: "TILES" },
   { label: "Audio",    ref: "AUDIO" },
-  { label: "Entities", ref: "ENTITIES" },
+  { label: "Video", ref: "VIDEO" },
   { label: "Logic",    ref: "LOGIC" },
   { label: "Files",    ref: "FILES" },
 ];
@@ -32,6 +34,12 @@ export const PAGES = {
     { label: "Pattern", page: "AUDIO_PATTERN", type: "AUDIO_PATTERN" }, 
   ],
 
+  VIDEO: [
+    { label: "Assets",    page: "VIDEO_ASSETS",   type: "VIDEO_ASSETS" },
+    { label: "Preview",   page: "PIXEL_PREVIEW",  type: "PIXEL_PREVIEW" },
+    { label: "Export",    page: "GRID_EXPORT",    type: "GRID_EXPORT" },
+  ],
+
   LOGIC: [
     { label: "Triggers", page: "LOGIC_TRIGGERS", type: "LOGIC_TRIGGERS" },
     { label: "Events",   page: "LOGIC_EVENTS",   type: "LOGIC_EVENTS" },
@@ -43,9 +51,5 @@ export const PAGES = {
     { label: "Load",   page: "FILE_LOAD",   type: "FILE_LOAD_PAGE" },
   ],
 
-  ENTITIES: [
-    { label: "NPCs",     page: "ENTITY_NPCS",    type: "ENTITY_LIST" },
-    { label: "Enemies",  page: "ENTITY_ENEMIES", type: "ENTITY_LIST" },
-    { label: "Pickups",  page: "ENTITY_PICKUPS", type: "ENTITY_LIST" },
-  ],
+  
 };

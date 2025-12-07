@@ -1,7 +1,7 @@
-import { R } from "../../../core/runtime.js";
-import { TILE_SIZE, TILE_COLS } from "../../../core/tileset.js";
+import { R } from "../../../../core/runtime.js";
+import { TILE_SIZE, TILE_COLS } from "../../../../core/tileset.js";
 
-export class Palette {
+export class PalettePage {
   constructor(def) {
     this.def = def; // store metadata
     this.x = 0;
