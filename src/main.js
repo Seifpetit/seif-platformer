@@ -9,7 +9,8 @@ import { loadLevel } from './core/levelLoader.js';
 import { updateFrame, renderFrame } from './core/orchestrator.js';
 import { registerKeyboard } from './core/input.js';
 import { handleImportedFiles } from "./core/importRouter.js";
-import { ToasterUI } from './ui/Toaster.js';
+import { ToasterUI } from './services/Toaster.js';
+import { ModalUI } from './services/modalWindow/ModalWindow.js';
 // ─────────────────────────────────────────────────────────────────────────────
 // [LIFECYCLE] preload/setup
 // preload → load images/assets
@@ -31,6 +32,7 @@ new window.p5(p => {
     R.layout.assets.cursor_k = p.loadImage("src/assets/pointer_k.png");
     R.layout.assets.cursor_j = p.loadImage("src/assets/pointer_j.png");
     R.layout.assets.cursor_b = p.loadImage("src/assets/pointer_b.png");
+    R.layout.assets.hand_closed = p.loadImage("src/assets/hand_closed.png");
     R.layout.assets.mark_exlamation_cursor_b = p.loadImage("src/assets/mark_exclamation_pointer_b.png");
   };
 
@@ -86,13 +88,16 @@ new window.p5(p => {
   // clear + composite: world → overlay → HUD
   // ───────────────────────────────────────────────────────────────────────────
   p.draw = () => {
+    const m = R.input.mouse;
     p.clear(); // <── first
 
     // stop viewport updates if modal is open
     updateFrame(p);
+    ModalUI.update();
     ToasterUI.update(1/60);
 
     renderFrame(p, { gWorld, gOverlay, gHUD });
+    ModalUI.render(gOverlay);
     ToasterUI.render(gOverlay);
     //if(R.ui.dragActive) ToasterUI.showImportIntent();
 
@@ -101,19 +106,25 @@ new window.p5(p => {
     p.image(gOverlay, 0, 0);
     p.image(gHUD, 0, 0);
    
-    if (R.cursor.currentPng) { 
-        p.image(R.cursor.currentPng, R.cursor.x, R.cursor.y);
+    if (R.cursor.currentPng) p.image(R.cursor.currentPng, m.x, m.y);
+
+    if(m.pressed) {
+      console.clear(); console.log("0_drag initiated from main.js");
+      if(!R.ui.modalDrag) {ModalUI.onClick(m.x, m.y);
+      ToasterUI.onClick(m.x, m.y);}
+      ModalUI.onDrag(m.x, m.y);
+      
     }
+    if (!m.pressed && ModalUI.active) {
+      ModalUI.active.stopDrag();
+    }
+
+
 
   };
 
   // prevent context menu (so right-click erases)
   p.canvas?.addEventListener?.('contextmenu', e => e.preventDefault());
-
-  p.mousePressed = () => {
-    ToasterUI.onClick(R.input.mouse.x, R.input.mouse.y);
-  };
-
 
   p.windowResized = () => {
     p.resizeCanvas(window.innerWidth, window.innerHeight);

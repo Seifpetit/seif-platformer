@@ -4,7 +4,7 @@ import { importAudio } from "./importAudio.js";
 import { importVideo } from "./importVideo.js";
 import { importImage } from "./importImage.js";
 
-import { ToasterUI } from "../ui/Toaster.js";
+import { ToasterUI } from "../services/Toaster.js";
 
 import { R } from "./runtime.js";
 

@@ -12,7 +12,10 @@ export function updateFrame(p) {
     R.cursor.currentPng = R.layout.assets.mark_exlamation_cursor_b;
     return;
   }
+  
   R.cursor.currentPng = R.layout.assets.cursor_b;
+  if(R.ui.modalDrag) {R.cursor.currentPng = R.layout.assets.hand_closed; return;}
+
   updatePhysicsAll();
   
   switch (R.mode) {

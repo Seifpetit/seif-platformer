@@ -1,5 +1,6 @@
 import { R } from "../../../../../core/runtime.js";
 import { HeaderBar } from "./headerBar.js";
+import { ModalUI } from "../../../../../services/modalWindow/ModalWindow.js";
 
 export class VideoAssetsPage {
   constructor() {
@@ -36,6 +37,19 @@ export class VideoAssetsPage {
     // Handle recording toggle
     if (msg.role === "rec") {
       this.isRecording = !this.isRecording;
+
+      ModalUI.show({
+        title: "recording",
+        soze: "small",
+        blocking: true,
+         content: (g, x, y, w, h) => {
+          g.fill(220);
+          g.textAlign(g.LEFT, g.TOP);
+          g.textSize(16);
+          g.text("Recording settings window\n(placeholder)", x, y);
+         }
+      });
+      
       return;
     }
 

@@ -64,6 +64,7 @@ export const R = {
   ui: {
 
     modalLock: false,
+    modalDrag: false,
 
     timelineMode: null,
     brushMode: null,

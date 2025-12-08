@@ -2,51 +2,82 @@
 
 ## 1. Overview
 
-Seif Platformer is a modular 2D game editor and engine built entirely from scratch in JavaScript.  
-It combines a clean update/render architecture with a multi-panel UI, allowing you to paint levels,  
-manage tilesets, handle audio assets, and extend the editor through metadata.
+Seif Platformer is a fully custom 2D editor and engine built from scratch in JavaScript.
+It pairs a clean update/render pipeline with a multi-panel interface that lets you paint levels,
+manage tilesets, import assets, and extend functionality through metadata.
 
-The goal isn’t just to build levels — it’s to build a toolchain.  
-The editor grows like a real engine: modular folders, clear responsibilities, and an architecture  
-designed to scale without friction.
+The project is not just a level editor, it is a growing toolchain.
+Its architecture mirrors real engines: modular folders, explicit responsibility zones,
+and systems designed to scale without friction as new tools, pages, and features emerge.
 
 ---
 
 ## 2. Features
 
-### Editor
-- Tile-based world painting (paint, erase, select, fill)
-- Dynamic tile palette with auto-scaling for any atlas size
-- Custom grid renderer with snapping and hover preview
-- Separation of update/render across all panels
-- Multi-panel layout (Viewport, Right Panel, Bottom Dock)
-- Custom cursor visualization inside and outside the grid
-- Live level state stored in a unified runtime object (`R`)
+Editor
 
-### Audio
-- Audio asset library with list view
-- Drag-and-drop audio importing (with duration detection)
-- Asset selection + metadata display
-- Planned: waveform preview, scrubbing, cards mode, edit tools
+Tile-based world painting (paint, erase, select, fill)
 
-### Architecture Highlights
-- Metadata-driven Page System (Tiles, Audio, Logic, Entities, Files)
-- Entry-point architecture: each subsystem exposes one clean `index.js`
-- Single runtime state (`R`) shared cleanly across all domains
-- Russian-doll composition: containers → components → widgets
-- Responsibility-based folder structure (`core/`, `viewport/`, `rightPanel/`)
-- Modular update/render lifecycle for predictable scaling
+Dynamic tile palette that auto-scales to any atlas
+
+Custom grid renderer with snapping, hover states, and selection feedback
+
+Full update/render separation across every panel
+
+Multi-panel workspace (Viewport, Right Panel, Bottom Dock)
+
+Custom cursor system inside and outside the grid
+
+Live level data stored in a unified runtime state (R)
+
+Audio
+
+Audio asset library with real-time list view
+
+Drag-and-drop importing with file-type detection and duration parsing
+
+Asset selection with metadata display
+
+Planned: waveform rendering, scrubbing, card mode, and editing tools
+
+Architecture Highlights
+
+Metadata-driven page system (Tiles, Audio, Logic, Entities, Files)
+
+Entry-point architecture — each subsystem exposes a clean index.js
+
+Single runtime state (R) shared predictably across all domains
+
+Russian-doll composition: panels → containers → components → widgets
+
+Responsibility-based folder layout (core/, viewport/, rightPanel/)
+
+Modular update/render lifecycle for deterministic scaling
 
 
 ---
 
 ## 3. 🌐 Live Demo  
 👉 https://seifpetit.github.io/seif-platformer  
-![Gameplay Demo](./docs/builder-demo.gif)
 
-A modular 2D studio engine built to be expressive, fast, and frictionless.  
-Every panel, tool, and interaction is designed to feel immediate and intuitive, while still exposing  
-the full power of a custom engine under the hood.
+A visual tour of the editor in action.
+These short demos highlight painting tools, asset importing, and the custom modal system.
+
+🎨 Tile Painting & Grid Interaction
+
+Real-time painting, erasing, selecting, filling, and hover previews.
+![Gameplay Demo](./docs/demo-tile-painter.gif)
+
+📁 Drag-and-Drop Asset Importing
+
+Import audio and other assets directly from the file system with instant UI updates.
+![Gameplay Demo](./docs/demo-file-uploads.gif)
+
+💻 Modal Window System
+
+Custom draggable modal windows with fade-in overlays, input blocking, and event routing.
+This shows the engine’s internal UI framework in action.
+![Gameplay Demo](./docs/demo-ModalWindows.gif)
 
 ---
 
@@ -67,6 +98,8 @@ bottomDock/ ← inspector, toolbars, timeline (future)
 assets/ ← tile atlases, cursors, audio
 
 levels/ ← JSON level files
+
+services/ ← Toaster + ModalWindow
 
 Each folder represents a clear responsibility zone:  
 **core** for engine logic, **editor** for all UI panels, **assets** for raw data, and **levels** for game content.  
